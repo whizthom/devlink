@@ -2,7 +2,7 @@ package com.devlink1.devlink1.Service.CustomUserService;
 
 
 import com.devlink1.devlink1.Entity.User;
-import com.devlink1.devlink1.UserRepository.UserRepository;
+import com.devlink1.devlink1.Repository.UserRepository;
 import com.devlink1.devlink1.Util.CustomUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

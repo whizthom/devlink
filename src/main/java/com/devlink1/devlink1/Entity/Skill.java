@@ -6,10 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name="skills")
+@Table(name = "skills", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,4 +25,17 @@ public class Skill {
         @ManyToMany(mappedBy = "skills")
         private Set<User> users = new HashSet<>();
 
+        // Prevent equals/hashCode from touching 'users' (lazy-loaded collection)
+        @Override
+        public boolean equals(Object o) {
+                if (this == o) return true;
+                if (!(o instanceof Skill)) return false;
+                Skill skill = (Skill) o;
+                return id != null && id.equals(skill.id);
+        }
+
+        @Override
+        public int hashCode() {
+                return Objects.hashCode(id);
+        }
 }

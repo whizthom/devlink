@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DevLink | User Dashboard</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --brand-1: #ff00ff;
+            --brand-2: #00ffff;
+            --brand-3: #ff00ff;
+            --ink-900: #0f172a;
+            --ink-700: #334155;
+            --ink-500: #6b7280;
+            --bg-soft: #f7f8fb;
+            --card: #ffffff;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --primary: #0ea5e9;
+        }
+
+        html, body { height: 100%; }
+        body {
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+            color: var(--ink-900);
+            background: var(--bg-soft);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            inset: 0 auto 0 0;
+            width: 280px;
+            background: linear-gradient(180deg, #101827, #0b1220 60%, #0b1220);
+            color: #e5e7eb;
+            border-right: 1px solid rgba(255,255,255,0.06);
+            z-index: 1030;
+        }
+        .sidebar .brand {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            padding: 1.25rem 1.25rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            background: linear-gradient(90deg, rgba(255,0,255,.06), rgba(0,255,255,.06));
+        }
+        .sidebar .brand .logo {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--brand-1), var(--brand-2), var(--brand-3));
+            box-shadow: 0 6px 20px rgba(0,0,0,.25);
+        }
+        .sidebar .menu { padding: 1rem; }
+        .sidebar .menu a {
+            display: flex; align-items: center; gap: .75rem;
+            padding: .7rem .9rem;
+            color: #cbd5e1; text-decoration: none; border-radius: 10px;
+            transition: .2s ease;
+        }
+        .sidebar .menu a:hover,
+        .sidebar .menu a.active {
+            background: linear-gradient(90deg, rgba(255,0,255,.13), rgba(0,255,255,.13));
+            color: #fff;
+        }
+        .sidebar .menu .section {
+            margin-top: 1rem; margin-bottom: .5rem;
+            padding: 0 .4rem; font-size: .75rem; letter-spacing: .06em; color: #94a3b8; text-transform: uppercase;
+        }
+
+        /* Main */
+        .main {
+            margin-left: 280px;
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+        }
+
+        /* Topbar */
+        .topbar {
+            position: sticky; top: 0; z-index: 1020;
+            background: #ffffff; border-bottom: 1px solid #eef2f7;
+        }
+        .topbar .search {
+            max-width: 520px; width: 100%;
+            border: 1px solid #e5e7eb; border-radius: 12px; padding: 0.5rem 0.75rem; background: #fafafa;
+        }
+
+        /* Cards */
+        .card-soft {
+            background: var(--card);
+            border: 1px solid #eef2f7;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(2, 8, 20, 0.03);
+        }
+
+        .stat-pill {
+            display: inline-flex; align-items: center; gap: .5rem;
+            padding: .25rem .6rem; border-radius: 999px; font-size: .8rem;
+            background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb;
+        }
+
+        .badge-live {
+            border: 1px dashed rgba(255,0,255,.4);
+            background: radial-gradient(1200px 1200px at 0% 0%, rgba(255,0,255,.05), transparent 40%),
+            radial-gradient(1000px 1000px at 100% 0%, rgba(0,255,255,.05), transparent 40%);
+            color: #0f172a;
+        }
+
+        .gradient-underline {
+            position: relative; display: inline-block;
+        }
+        .gradient-underline::after {
+            content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 3px;
+            background: linear-gradient(90deg, var(--brand-1), var(--brand-2), var(--brand-3));
+            border-radius: 999px;
+        }
+
+        .table thead th { font-weight: 600; color: var(--ink-700); }
+        .table-hover tbody tr:hover { background: #fbfcfe; }
+
+        .form-check-input:focus, .form-control:focus, .form-select:focus {
+            border-color: var(--brand-2); box-shadow: 0 0 0 0.2rem rgba(0, 255, 255, .15);
+        }
+
+        .btn-gradient {
+            background: linear-gradient(90deg, var(--brand-1), var(--brand-2));
+            border: none; color: #0b1020;
+        }
+        .btn-gradient:hover { filter: brightness(.95); }
+
+        .empty-state {
+            border: 2px dashed #e2e8f0; border-radius: 16px; padding: 2rem; text-align: center; color: var(--ink-500);
+            background: #ffffff;
+        }
+
+        @media (max-width: 991.98px) {
+            .sidebar { width: 88px; }
+            .sidebar .brand span, .sidebar .menu .label { display: none; }
+            .sidebar .menu a { justify-content: center; }
+            .sidebar .menu a i { margin: 0; }
+            .main { margin-left: 88px; }
+        }
+    </style>
+</head>
+<body>
+<!-- Sidebar -->
+<aside class="sidebar">
+    <div class="brand">
+        <div class="logo"></div>
+        <span class="fw-semibold">DevLink</span>
+    </div>
+
+    <nav class="menu">
+        <div>
+            <a th:href="@{/dashboard}" class="active"><i class="bi bi-speedometer2"></i><span class="label">Dashboard</span></a>
+            <a th:href="@{/profile}"><i class="bi bi-person"></i><span class="label">Profile</span></a>
+            <a th:href="@{/skills}"><i class="bi bi-layers"></i><span class="label">Skills</span></a>
+            <a th:href="@{/projects}"><i class="bi bi-kanban"></i><span class="label">Projects</span></a>
+        </div>
+        <div class="section">Account</div>
+        <div>
+            <a th:href="@{/settings}"><i class="bi bi-gear"></i><span class="label">Settings</span></a>
+            <a th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i><span class="label">Logout</span></a>
+        </div>
+    </nav>
+</aside>
+
+<!-- Main -->
+<main class="main">
+    <!-- Topbar -->
+    <header class="topbar card-soft py-3">
+        <div class="container-fluid px-4">
+            <div class="d-flex align-items-center gap-3 justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                    <h1 class="h5 mb-0 gradient-underline">Your Dashboard</h1>
+                    <span class="stat-pill badge-live">Live</span>
+                </div>
+                <form class="d-none d-md-flex align-items-center gap-2" role="search">
+                    <i class="bi bi-search"></i>
+                    <input class="search form-control form-control-sm" type="search" placeholder="Search experiences, certifications…" aria-label="Search" />
+                </form>
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalQuickAdd"><i class="bi bi-plus-circle"></i> Quick Add</button>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-light border dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img th:src="${profileImageUrl}" src="https://via.placeholder.com/32" alt="avatar" class="rounded-circle me-2" width="32" height="32" />
+                            <span th:text="${username}">Admin</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person"></i> Profile</a></li>
+                            <li><a class="dropdown-item" th:href="@{/settings}"><i class="bi bi-gear"></i> Settings</a></li>
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item" th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <section class="container-fluid px-4 py-4">
+        <!-- Stats Row -->
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-md-4">
+                <div class="card-soft p-3 d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="text-secondary">Experiences</div>
+                        <div class="display-6" th:text="${stats.experienceCount}">12</div>
+                    </div>
+                    <i class="bi bi-briefcase fs-2 text-muted"></i>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="card-soft p-3 d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="text-secondary">Certifications</div>
+                        <div class="display-6" th:text="${stats.certCount}">7</div>
+                    </div>
+                    <i class="bi bi-patch-check fs-2 text-muted"></i>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="card-soft p-3 d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="text-secondary">Last Updated</div>
+                        <div class="h3" th:text="${#temporals.format(stats.lastUpdated, 'dd MMM yyyy')}">16 Aug 2025</div>
+                    </div>
+                    <i class="bi bi-clock-history fs-2 text-muted"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="card-soft p-3">
+            <ul class="nav nav-tabs" id="dashTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="exp-tab" data-bs-toggle="tab" data-bs-target="#exp" type="button" role="tab" aria-controls="exp" aria-selected="true">
+                        <i class="bi bi-briefcase"></i> Experiences
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="cert-tab" data-bs-toggle="tab" data-bs-target="#cert" type="button" role="tab" aria-controls="cert" aria-selected="false">
+                        <i class="bi bi-patch-check"></i> Certifications
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content pt-3" id="dashTabsContent">
+                <!-- Experiences -->
+                <div class="tab-pane fade show active" id="exp" role="tabpanel" aria-labelledby="exp-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <select class="form-select form-select-sm" style="max-width:180px">
+                                <option selected>All types</option>
+                                <option>Full-time</option>
+                                <option>Part-time</option>
+                                <option>Contract</option>
+                                <option>Internship</option>
+                            </select>
+                            <select class="form-select form-select-sm" style="max-width:180px">
+                                <option selected>Sort by: Latest</option>
+                                <option>Oldest</option>
+                                <option>Company (A-Z)</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-sm btn-gradient" data-bs-toggle="modal" data-bs-target="#modalAddExperience"><i class="bi bi-plus-lg"></i> Add Experience</button>
+                    </div>
+
+                    <div th:if="${#lists.isEmpty(experiences)}" class="empty-state">
+                        <i class="bi bi-briefcase fs-2 d-block mb-2"></i>
+                        <div class="fw-semibold">No experiences yet</div>
+                        <div class="small">Click <strong>Add Experience</strong> to get started.</div>
+                    </div>
+
+                    <div class="table-responsive" th:if="${!#lists.isEmpty(experiences)}">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                            <tr>
+                                <th>Role</th>
+                                <th>Company</th>
+                                <th>Location</th>
+                                <th>Period</th>
+                                <th>Type</th>
+                                <th>Highlights</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="exp : ${experiences}">
+                                <td>
+                                    <div class="fw-semibold" th:text="${exp.title}">Software Engineer</div>
+                                    <div class="text-muted small" th:text="${exp.stack}">Spring Boot, Thymeleaf</div>
+                                </td>
+                                <td th:text="${exp.company}">DevLink Inc.</td>
+                                <td th:text="${exp.location}">Lagos, NG</td>
+                                <td>
+                                    <span th:text="${#temporals.format(exp.startDate, 'MMM yyyy')}">Jan 2022</span>
+                                    –
+                                    <span th:text="${exp.current} ? 'Present' : ${#temporals.format(exp.endDate, 'MMM yyyy')}">Present</span>
+                                </td>
+                                <td><span class="badge text-bg-light border" th:text="${exp.employmentType}">Full-time</span></td>
+                                <td>
+                                    <ul class="small m-0 ps-3" th:utext="${exp.highlightsHtml}">
+                                        <li>Built scalable APIs</li>
+                                    </ul>
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a class="btn btn-outline-secondary" th:href="@{'/dashboard/experience/' + ${exp.id}}"><i class="bi bi-pencil"></i> Edit</a>
+                                        <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#modalDelete" th:attr="data-id=${exp.id}, data-type='experience', data-title=${exp.title}"><i class="bi bi-trash"></i> Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Certifications -->
+                <div class="tab-pane fade" id="cert" role="tabpanel" aria-labelledby="cert-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <select class="form-select form-select-sm" style="max-width:220px">
+                                <option selected>Status: All</option>
+                                <option>Valid</option>
+                                <option>Expired</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-sm btn-gradient" data-bs-toggle="modal" data-bs-target="#modalAddCert"><i class="bi bi-plus-lg"></i> Add Certification</button>
+                    </div>
+
+                    <div th:if="${#lists.isEmpty(certifications)}" class="empty-state">
+                        <i class="bi bi-patch-check fs-2 d-block mb-2"></i>
+                        <div class="fw-semibold">No certifications yet</div>
+                        <div class="small">Click <strong>Add Certification</strong> to add one.</div>
+                    </div>
+
+                    <div class="table-responsive" th:if="${!#lists.isEmpty(certifications)}">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                            <tr>
+                                <th>Certification</th>
+                                <th>Issuer</th>
+                                <th>Issued</th>
+                                <th>Expires</th>
+                                <th>Credential ID</th>
+                                <th>Verify</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="c : ${certifications}">
+                                <td>
+                                    <div class="fw-semibold" th:text="${c.name}">AWS Certified Developer – Associate</div>
+                                    <span class="badge text-bg-light border" th:if="${c.category != null}" th:text="${c.category}">Cloud</span>
+                                </td>
+                                <td th:text="${c.issuer}">Amazon Web Services</td>
+                                <td th:text="${#temporals.format(c.issueDate, 'dd MMM yyyy')}">02 Feb 2024</td>
+                                <td>
+                                    <span th:if="${c.expireDate != null}" th:text="${#temporals.format(c.expireDate, 'dd MMM yyyy')}">02 Feb 2027</span>
+                                    <span th:if="${c.expireDate == null}" class="text-muted">No expiry</span>
+                                </td>
+                                <td th:text="${c.credentialId}">ABC-12345</td>
+                                <td>
+                                    <a th:href="${c.verifyUrl}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary"><i class="bi bi-box-arrow-up-right"></i> Verify</a>
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a class="btn btn-outline-secondary" th:href="@{'/dashboard/cert/' + ${c.id}}"><i class="bi bi-pencil"></i> Edit</a>
+                                        <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#modalDelete" th:attr="data-id=${c.id}, data-type='cert', data-title=${c.name}"><i class="bi bi-trash"></i> Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Quick Add Modal -->
+<div class="modal fade" id="modalQuickAdd" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Quick Add</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-secondary" data-bs-target="#modalAddExperience" data-bs-toggle="modal"><i class="bi bi-briefcase"></i> Add Experience</button>
+                    <button class="btn btn-outline-secondary" data-bs-target="#modalAddCert" data-bs-toggle="modal"><i class="bi bi-patch-check"></i> Add Certification</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Experience Modal -->
+<div class="modal fade" id="modalAddExperience" tabindex="-1" aria-labelledby="addExperienceLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addExperienceLabel">Add Experience</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/dashboard/experience}" method="post">
+                <div class="modal-body">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Job Title</label>
+                            <input name="title" class="form-control" placeholder="e.g., Backend Engineer" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Company</label>
+                            <input name="company" class="form-control" placeholder="e.g., DevLink" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            <input name="location" class="form-control" placeholder="City, Country" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Employment Type</label>
+                            <select name="employmentType" class="form-select">
+                                <option>Full-time</option>
+                                <option>Part-time</option>
+                                <option>Contract</option>
+                                <option>Internship</option>
+                                <option>Freelance</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Start Date</label>
+                            <input type="month" name="startDate" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">End Date</label>
+                            <input type="month" name="endDate" class="form-control" />
+                            <div class="form-text">Leave blank if current role.</div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="current" id="expCurrent">
+                                <label class="form-check-label" for="expCurrent">This is my current role</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Highlights (Markdown/HTML allowed)</label>
+                            <textarea name="highlightsHtml" rows="4" class="form-control" placeholder="<ul><li>Delivered X</li><li>Improved Y</li></ul>"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Tech Stack (comma-separated)</label>
+                            <input name="stack" class="form-control" placeholder="Spring Boot, Thymeleaf, PostgreSQL" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-gradient">Save Experience</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Certification Modal -->
+<div class="modal fade" id="modalAddCert" tabindex="-1" aria-labelledby="addCertLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCertLabel">Add Certification</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/dashboard/cert}" method="post">
+                <div class="modal-body">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Certification Name</label>
+                            <input name="name" class="form-control" placeholder="e.g., Google Associate Cloud Engineer" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Issuer</label>
+                            <input name="issuer" class="form-control" placeholder="e.g., Google" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Category</label>
+                            <input name="category" class="form-control" placeholder="e.g., Cloud, Security" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Issue Date</label>
+                            <input type="date" name="issueDate" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Expiry Date</label>
+                            <input type="date" name="expireDate" class="form-control" />
+                            <div class="form-text">Leave blank if no expiry.</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Credential ID</label>
+                            <input name="credentialId" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Verification URL</label>
+                            <input type="url" name="verifyUrl" class="form-control" placeholder="https://" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-gradient">Save Certification</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal (shared) -->
+<div class="modal fade" id="modalDelete" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="deleteForm" th:action="@{/dashboard/delete}" method="post">
+                <div class="modal-body">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <input type="hidden" name="_method" value="delete" />
+                    <input type="hidden" name="type" id="deleteType" />
+                    <input type="hidden" name="id" id="deleteId" />
+                    <p class="mb-0">You're about to delete <strong id="deleteTitle">this item</strong>. This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Toasts -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080">
+    <div id="toastSaved" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body"><i class="bi bi-check-circle me-2"></i>Saved successfully.</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Populate shared delete modal with data attributes
+    const deleteModal = document.getElementById('modalDelete');
+    if (deleteModal) {
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const id = button?.getAttribute('data-id');
+            const type = button?.getAttribute('data-type');
+            const title = button?.getAttribute('data-title') || 'this item';
+            document.getElementById('deleteId').value = id || '';
+            document.getElementById('deleteType').value = type || '';
+            document.getElementById('deleteTitle').textContent = title;
+
+            // Set form action dynamically if you prefer type-specific routes
+            // Example: /dashboard/experience/{id} or /dashboard/cert/{id}
+            // document.getElementById('deleteForm').setAttribute('action', `/dashboard/${type}/${id}`);
+        });
+    }
+
+    // Example: show toast based on URL param ?saved=true (optional UX)
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('saved') === 'true') {
+        const toastEl = document.getElementById('toastSaved');
+        if (toastEl) new bootstrap.Toast(toastEl).show();
+    }
+</script>
+</body>
+</html>

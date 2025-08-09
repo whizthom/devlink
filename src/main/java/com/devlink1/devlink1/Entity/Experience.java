@@ -25,5 +25,19 @@ public class Experience {
     private LocalDate endDate;
 
     @ManyToOne
+//    @JoinColumn(name = "user_experience")
     private User user;
+
+    @Override
+    public String toString() {
+        return "Experience{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", Company='" + Company + '\'' +
+                ", description='" + description + '\'' +
+                ", location='" + location + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                '}';
+    }
 }
