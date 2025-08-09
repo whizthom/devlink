@@ -25,4 +25,15 @@ public class Certification {
 
     @ManyToOne
     private User user;
+
+    @Override
+    public String toString() {
+        return "Certification{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", issuingOrganization='" + issuingOrganization + '\'' +
+                ", dateIssued=" + dateIssued +
+                ", certificateUrl='" + certificateUrl + '\'' +
+                '}';
+    }
 }

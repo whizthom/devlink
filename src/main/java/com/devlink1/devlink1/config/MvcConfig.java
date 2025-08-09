@@ -18,12 +18,6 @@ public class MvcConfig implements WebMvcConfigurer {
         exposeDirectory(UPLOAD_DIR, registry);
     }
 
-//    @Override
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        // Be sure to use THREE forward slashes after "file:"
-//        registry.addResourceHandler("/photos/**")
-//                .addResourceLocations("file:///C:/Users/user/Downloads/blogPost/photos/");
-//    }
 
     private void exposeDirectory(String uploadDir, ResourceHandlerRegistry registry) {
 
