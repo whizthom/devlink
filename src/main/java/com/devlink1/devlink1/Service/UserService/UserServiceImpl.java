@@ -2,7 +2,7 @@ package com.devlink1.devlink1.Service.UserService;
 
 
 import com.devlink1.devlink1.Entity.User;
-import com.devlink1.devlink1.UserRepository.UserRepository;
+import com.devlink1.devlink1.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
