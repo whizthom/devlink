@@ -1,126 +1,174 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Onboarding | DevLink</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Welcome to DevLink</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom Styles -->
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .welcome-section {
+      background: linear-gradient(90deg, #007bff, #00c4cc);
+      color: white;
+      padding: 2rem;
+      border-radius: 10px;
+    }
+    .profile-card {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .progress {
+      height: 10px;
+    }
+    .suggested-section img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+  </style>
 </head>
-<body class="bg-light">
+<body>
 
-<!-- 🔹 NAVIGATION BAR -->
+<!-- Header -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold" href="/">DevLink</a>
-    <div class="collapse navbar-collapse">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="#">DevLink</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarNav" aria-controls="navbarNav"
+            aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="/dashboard">Dashboard</a></li>
-        <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
-        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+        <li class="nav-item"><a class="nav-link active" href="#">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Network</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Jobs</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Messages</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Logout</a></li>
       </ul>
     </div>
   </div>
 </nav>
 
-<!-- 🔹 DASHBOARD HEADER -->
-<div class="container my-4">
-  <div class="card shadow p-4">
-    <h4 class="mb-0">Welcome, <span th:text="${user.username}">User</span></h4>
-    <small class="text-muted">Complete your onboarding below</small>
+<!-- Welcome Banner -->
+<div class="container mt-4">
+  <div class="welcome-section text-center">
+    <h1>Welcome to DevLink, <span th:if="${user != null}" th:text="${user.username}">User</span>!</h1>
+    <p>Let’s get your profile ready so you can start connecting with professionals.</p>
   </div>
 </div>
 
-<!-- 🔹 PROGRESS BAR -->
-<div class="container">
-  <div class="progress mb-4" style="height: 25px;">
-    <div class="progress-bar progress-bar-striped bg-success fw-bold"
-         role="progressbar"
-         th:style="'width:' + ${progress} + '%'"
-         th:text="${progress + '% Completed'}">
+<!-- Main Content -->
+<div class="container mt-4">
+  <div class="row g-4">
+    <!-- Profile Setup -->
+    <div class="col-lg-8">
+      <div class="profile-card">
+        <h4>Complete Your Profile</h4>
+        <p>Profiles with a photo and skills get 3x more views.</p>
+
+        <!-- Progress Bar -->
+        <div class="mb-3">
+          <label class="form-label">Profile Completion</label>
+          <div class="progress">
+            <div class="progress-bar" role="progressbar"
+                 style="width: 30%;" aria-valuenow="30"
+                 aria-valuemin="0" aria-valuemax="100">30%</div>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <form th:action="@{/profile/setup/update}" method="post" th:object="${user}" enctype="multipart/form-data">
+
+<!--          HIDDEN INPUTS-->
+          <div class="mb-3">
+            <input type="hidden"  th:field="*{id}" class="form-control" name="profileImage">
+          </div>
+
+          <div class="mb-3">
+            <input type="hidden"  th:field="*{username}" class="form-control" name="profileImage">
+          </div>
+
+
+          <div class="mb-3">
+            <input type="hidden"  th:field="*{email}" class="form-control" name="profileImage">
+          </div>
+
+
+
+<!--          EDITABLE INPUTS-->
+<!--          profile picture-->
+          <div class="mb-3">
+            <label class="form-label">Profile Picture</label>
+            <input type="file" class="form-control" name="profileImage">
+          </div>
+
+<!--          skills-->
+          <div class="mb-3">
+            <label class="form-label">Skill(s)</label>
+            <input type="text" class="form-control" th:field="*{skills}" placeholder="e.g. Java, Spring Boot, React">
+          </div>
+
+<!--          Bio-->
+          <div class="mb-3">
+            <label class="form-label">Bio</label>
+            <textarea class="form-control" th:field="*{bio}" rows="3" placeholder="Write a short introduction about yourself..."></textarea>
+          </div>
+
+<!--            Experience-->
+          <div class="mb-3">
+            <label class="form-label">Experience</label>
+            <textarea class="form-control" th:field="*{experiences}" rows="3" placeholder="Tell us about your experience..."></textarea>
+          </div>
+
+<!--          Certification-->
+          <div class="mb-3">
+            <label class="form-label">Certification</label>
+            <textarea class="form-control" th:field="*{certifications}" rows="3" placeholder="What are your certifications..."></textarea>
+          </div>
+
+
+          <button type="submit" class="btn btn-primary">Save Profile</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Suggested Connections -->
+    <div class="col-lg-4">
+      <div class="profile-card suggested-section">
+        <h5>Suggested Connections</h5>
+        <ul class="list-unstyled mt-3">
+          <li class="d-flex align-items-center mb-3">
+            <img src="https://via.placeholder.com/50" alt="Profile">
+            <div class="ms-3">
+              <strong>Jane Doe</strong>
+              <p class="mb-0 text-muted">UI/UX Designer</p>
+            </div>
+            <button class="btn btn-sm btn-outline-primary ms-auto">Connect</button>
+          </li>
+          <li class="d-flex align-items-center mb-3">
+            <img src="https://via.placeholder.com/50" alt="Profile">
+            <div class="ms-3">
+              <strong>Mark Smith</strong>
+              <p class="mb-0 text-muted">Backend Developer</p>
+            </div>
+            <button class="btn btn-sm btn-outline-primary ms-auto">Connect</button>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- 🔹 FORMS -->
-<div class="container">
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- STEP 1: PROFILE FORM -->
-  <section th:if="${progress >= 0 && progress < 33}" class="card shadow p-4 mb-4">
-    <h5>Step 1: Profile Setup</h5>
-    <form th:action="@{/profile/setup/update}" th:object="${user}" method="post">
-      <div class="mb-3">
-        <label class="form-label">Skills</label>
-        <input type="text" name="skillsInput" class="form-control">
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Bio</label>
-        <textarea th:field="*{bio}" class="form-control" rows="3"></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary">Save & Continue</button>
-    </form>
-  </section>
-
-  <!-- STEP 2: EXPERIENCE FORM -->
-  <section th:if="${progress >= 33 && progress < 66}" class="card shadow p-4 mb-4">
-    <h5>Step 2: Experience</h5>
-    <form th:action="@{/profile/setup/experience}" th:object="${experience}" method="post">
-      <div class="mb-3">
-        <label class="form-label">Job Title</label>
-        <input type="text" th:field="*{title}" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Company</label>
-        <input type="text" th:field="*{company}" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Description</label>
-        <textarea th:field="*{description}" class="form-control" rows="3" required></textarea>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Start Date</label>
-        <input type="date" th:field="*{startDate}" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">End Date</label>
-        <input type="date" th:field="*{endDate}" class="form-control" required>
-      </div>
-      <button type="submit" class="btn btn-primary">Save & Continue</button>
-    </form>
-  </section>
-
-  <!-- STEP 3: CERTIFICATION FORM -->
-  <section th:if="${progress >= 66}" class="card shadow p-4 mb-4">
-    <h5>Step 3: Certifications</h5>
-    <form th:action="@{/profile/setup/certification}" th:object="${certification}" method="post" >
-      <div class="mb-3">
-        <label class="form-label">Certification Name</label>
-        <input type="text" th:field="*{title}" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Issuing Organisation</label>
-        <input type="text" th:field="*{issuingOrganization}" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Date Issued</label>
-        <input type="date" th:field="*{dateIssued}" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label">Certification URL</label>
-        <input type="url" th:field="*{certificateUrl}" class="form-control" required>
-      </div>
-      <button type="submit" class="btn btn-success">Save & Finish</button>
-    </form>
-  </section>
-
-  <!-- STEP 4: COMPLETION -->
-  <section th:if="${progress == 100}" class="alert alert-success shadow text-center p-4">
-    <h5> Congratulations <span th:text="${user.username}"></span>!</h5>
-    <p>Your onboarding is complete. You can now explore your full dashboard.</p>
-    <a href="/dashboard" class="btn btn-dark">Go to Dashboard</a>
-  </section>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
