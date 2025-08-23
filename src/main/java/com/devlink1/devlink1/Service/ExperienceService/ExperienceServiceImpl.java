@@ -1,6 +1,7 @@
 package com.devlink1.devlink1.Service.ExperienceService;
 
 import com.devlink1.devlink1.Entity.Experience;
+import com.devlink1.devlink1.Entity.User;
 import com.devlink1.devlink1.Repository.ExperienceRepository;
 import org.springframework.stereotype.Service;
 
@@ -30,4 +31,11 @@ public class ExperienceServiceImpl implements ExperienceService {
     public Experience addExperience(Experience experience) {
         return experienceRepository.save(experience);
     }
+
+    @Override
+    public List<Experience> findByUser(User user) {
+        return experienceRepository.findByUser(user);
+    }
+
+
 }

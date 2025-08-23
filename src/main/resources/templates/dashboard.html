@@ -208,15 +208,36 @@
     <section class="container-fluid px-4 py-4">
         <!-- Stats Row -->
         <div class="row g-3 mb-4">
-            <div class="col-12 col-md-4">
-                <div class="card-soft p-3 d-flex justify-content-between align-items-start">
-                    <div>
-                        <div class="text-secondary">Experiences</div>
-                        <div class="display-6" th:text="${stats.experienceCount}">12</div>
+            <div class="col-12 col-md-6">
+                <div class="card-soft p-3 d-flex flex-column">
+                    <div class="text-secondary mb-3">Experiences</div>
+
+                    <!-- Loop through user's experiences -->
+                    <div th:each="exp : ${experiences}" class="mb-3 border-bottom pb-2">
+                        <h6 class="mb-1">
+                            <i class="bi bi-briefcase text-muted me-2"></i>
+                            <span th:text="${exp.title}"></span>
+                            <small class="text-muted" th:text="'@ ' + ${exp.company}"></small>
+                        </h6>
+
+                        <p class="mb-1">
+                            <small th:text="${exp.description}"></small>
+                        </p>
+
+                        <p class="mb-0">
+                            <i class="bi bi-geo-alt text-muted me-1"></i>
+                            <small th:text="${exp.location}"></small>
+                            <br>
+                            <i class="bi bi-calendar text-muted me-1"></i>
+                            <small th:text="${#temporals.format(exp.startDate, 'MMM yyyy')}"></small>
+                            -
+                            <small th:text="${exp.endDate != null ? #temporals.format(exp.endDate, 'MMM yyyy') : 'Present'}"></small>
+                        </p>
                     </div>
-                    <i class="bi bi-briefcase fs-2 text-muted"></i>
                 </div>
             </div>
+
+
             <div class="col-12 col-md-4">
                 <div class="card-soft p-3 d-flex justify-content-between align-items-start">
                     <div>

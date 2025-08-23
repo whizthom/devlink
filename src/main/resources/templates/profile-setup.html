@@ -84,12 +84,15 @@
         <label class="form-label">End Date</label>
         <input type="date" th:field="*{endDate}" class="form-control" required>
       </div>
-      <button type="submit" class="btn btn-primary">Save & Continue</button>
+      <div class="d-flex justify-content-between">
+        <a th:href="@{/profile/setup/back/step1}" class="btn btn-secondary">← Go Back</a>
+        <button type="submit" class="btn btn-primary">Save & Continue</button>
+      </div>
     </form>
   </section>
 
   <!-- STEP 3: CERTIFICATION FORM -->
-  <section th:if="${progress >= 66}" class="card shadow p-4 mb-4">
+  <section th:if="${progress >= 66 && progress < 100}" class="card shadow p-4 mb-4">
     <h5>Step 3: Certifications</h5>
     <form th:action="@{/profile/setup/certification}" th:object="${certification}" method="post" >
       <div class="mb-3">
@@ -108,7 +111,10 @@
         <label class="form-label">Certification URL</label>
         <input type="url" th:field="*{certificateUrl}" class="form-control" required>
       </div>
-      <button type="submit" class="btn btn-success">Save & Finish</button>
+      <div class="d-flex justify-content-between">
+        <a th:href="@{/profile/setup/back/step2}" class="btn btn-secondary">← Go Back</a>
+        <button type="submit" class="btn btn-success">Save & Finish</button>
+      </div>
     </form>
   </section>
 

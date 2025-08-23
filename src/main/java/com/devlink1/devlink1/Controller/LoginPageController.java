@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -211,24 +212,58 @@ public class LoginPageController {
 
         System.out.println("Certification Updated");
 
-        return "forward:/dashboard";
+        return "redirect:/dashboard";
     }
 
     // Dashboard
 
-    @PostMapping("/dashboard")
+    @GetMapping("/dashboard")
     public String dashboard(@AuthenticationPrincipal UserDetails userDetails,
                                      Model model) {
 
         User user = userService.findByUsername(userDetails.getUsername());
-        Experience experience = new Experience();
-        Certification certification = new Certification();
+
+
+        //get the list of the user experience
+        List<Experience> experiences = experienceService.findByUser(user);
+
+        //get the list of the user certifications
+        List<Certification> certifications = user.getCertifications();
 
 
         model.addAttribute("user", user);
-        model.addAttribute("experience", experience);
-        model.addAttribute("certification", certification);
+        model.addAttribute("experiences", experiences);
+        model.addAttribute("certification", certifications);
 
         return "dashboard";
     }
+
+    // Forward the user to the Skill and Bio Setup from Expereience
+    @GetMapping("/profile/setup/back/step1")
+    public String goBacktoSkillandBioPage(@AuthenticationPrincipal UserDetails userDetails){
+
+        //Get the current User
+        User user = userService.findByUsername(userDetails.getUsername());
+
+        //Get the current User progress and set it to 10
+        user.setProgress(10);
+        userService.addNewUser(user);
+
+        return "redirect:/profile-setup";
+    }
+
+    // Forward the user to the Skill and Bio Setup from Expereience
+    @GetMapping("/profile/setup/back/step2")
+    public String goBacktoExperiencePage(@AuthenticationPrincipal UserDetails userDetails){
+
+        //Get the current User
+        User user = userService.findByUsername(userDetails.getUsername());
+
+        //Get the current User progress and set it to 10
+        user.setProgress(35);
+        userService.addNewUser(user);
+
+        return "redirect:/profile-setup";
+    }
+
 }
