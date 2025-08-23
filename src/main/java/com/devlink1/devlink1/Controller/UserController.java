@@ -70,7 +70,7 @@ public class UserController {
 
             user.setRole(Role.User);
             userService.addNewUser(user);
-            return "forward:/profile-setup";
+            return "profile-setup";
         }
     }
 }
