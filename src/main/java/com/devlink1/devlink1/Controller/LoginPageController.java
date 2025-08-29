@@ -63,7 +63,7 @@ public class LoginPageController {
 
 //        set to go straight to dashboard if the user progress is 100
         if(user.getProgress() == 100){
-            return "dashboard";
+            return "redirect:/dashboard";
         }
         
         Experience experience = new Experience();
@@ -202,7 +202,8 @@ public class LoginPageController {
     }
 
     @PostMapping("/profile/setup/certification")
-    public String saveCertification(@ModelAttribute("certification") Certification certification,
+    public String saveCertification(@ModelAttribute("certification") Certification
+                                                certification,
                                  @AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.findByUsername(userDetails.getUsername());
 
@@ -212,7 +213,7 @@ public class LoginPageController {
 
         System.out.println("Certification Updated");
 
-        return "redirect:/dashboard";
+        return "profile-setup";
     }
 
     // Dashboard
@@ -233,7 +234,7 @@ public class LoginPageController {
 
         model.addAttribute("user", user);
         model.addAttribute("experiences", experiences);
-        model.addAttribute("certification", certifications);
+        model.addAttribute("certifications", certifications);
 
         return "dashboard";
     }

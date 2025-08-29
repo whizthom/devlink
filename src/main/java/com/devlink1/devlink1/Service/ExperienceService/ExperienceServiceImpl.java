@@ -6,6 +6,7 @@ import com.devlink1.devlink1.Repository.ExperienceRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ExperienceServiceImpl implements ExperienceService {
@@ -35,6 +36,11 @@ public class ExperienceServiceImpl implements ExperienceService {
     @Override
     public List<Experience> findByUser(User user) {
         return experienceRepository.findByUser(user);
+    }
+
+    @Override
+    public void deleteExperienceById(Long id) {
+        experienceRepository.deleteById(id);
     }
 
 

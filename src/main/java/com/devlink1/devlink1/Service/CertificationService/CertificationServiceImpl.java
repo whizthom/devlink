@@ -30,4 +30,14 @@ public class CertificationServiceImpl implements CertificationService {
     public Certification addCertification(Certification certification) {
         return certificationRepository.save(certification);
     }
+
+    @Override
+    public void deleteById(Long id) {
+        certificationRepository.deleteById(id);
+    }
+
+    @Override
+    public Certification findCertificationById(Long id) {
+        return certificationRepository.findById(id).orElse(null);
+    }
 }
