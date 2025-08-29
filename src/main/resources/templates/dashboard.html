@@ -1,201 +1,244 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>DevLink | User Dashboard</title>
 
     <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
 
     <style>
-        :root {
-            --brand-1: #ff00ff;
-            --brand-2: #00ffff;
-            --brand-3: #ff00ff;
-            --ink-900: #0f172a;
-            --ink-700: #334155;
-            --ink-500: #6b7280;
-            --bg-soft: #f7f8fb;
-            --card: #ffffff;
-            --success: #16a34a;
-            --danger: #dc2626;
-            --warning: #d97706;
-            --primary: #0ea5e9;
+        :root{
+            --brand-1:#ff00ff; --brand-2:#00ffff;
+            --ink-900:#0f172a; --ink-800:#1f2937; --ink-700:#334155; --ink-600:#475569; --ink-500:#6b7280;
+            --bg-soft:#f7f8fb; --card:#ffffff; --line:#eef2f7;
+            --danger:#dc2626; --primary:#0ea5e9; --success:#16a34a; --warning:#f59e0b;
         }
 
-        html, body { height: 100%; }
-        body {
-            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
-            color: var(--ink-900);
-            background: var(--bg-soft);
+        html,body{min-height:100%}
+        body{
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol",sans-serif;
+            color:var(--ink-900);
+            background:var(--bg-soft);
+            overflow-x:hidden;
         }
 
-        /* Sidebar */
-        .sidebar {
-            position: fixed;
-            inset: 0 auto 0 0;
-            width: 280px;
-            background: linear-gradient(180deg, #101827, #0b1220 60%, #0b1220);
-            color: #e5e7eb;
-            border-right: 1px solid rgba(255,255,255,0.06);
-            z-index: 1030;
+        /* ===== Sidebar ===== */
+        .sidebar{
+            position:fixed; inset:0 auto 0 0; width:270px;
+            background:linear-gradient(180deg,#101827 0%,#0b1220 60%,#0b1220 100%);
+            color:#e5e7eb; border-right:1px solid rgba(255,255,255,.08);
+            z-index:1030; overflow-y:auto;
         }
-        .sidebar .brand {
-            display: flex;
-            align-items: center;
-            gap: .6rem;
-            padding: 1.25rem 1.25rem 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            background: linear-gradient(90deg, rgba(255,0,255,.06), rgba(0,255,255,.06));
+        .sidebar .brand{
+            display:flex; align-items:center; gap:.75rem; padding:1.25rem;
+            border-bottom:1px solid rgba(255,255,255,.06);
+            background:linear-gradient(90deg,rgba(255,0,255,.06),rgba(0,255,255,.06));
         }
-        .sidebar .brand .logo {
-            width: 38px; height: 38px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--brand-1), var(--brand-2), var(--brand-3));
-            box-shadow: 0 6px 20px rgba(0,0,0,.25);
+        .sidebar .logo{
+            width:36px;height:36px;border-radius:10px;
+            background:conic-gradient(from 120deg,var(--brand-1),var(--brand-2) 60%,var(--brand-1));
+            box-shadow:0 6px 16px rgba(0,0,0,.25);
         }
-        .sidebar .menu { padding: 1rem; }
-        .sidebar .menu a {
-            display: flex; align-items: center; gap: .75rem;
-            padding: .7rem .9rem;
-            color: #cbd5e1; text-decoration: none; border-radius: 10px;
-            transition: .2s ease;
+        .sidebar .brand span{font-weight:700;letter-spacing:.2px}
+        .sidebar .menu{padding:1rem}
+        .sidebar .menu a{
+            --pad:.7rem .95rem;
+            display:flex; align-items:center; gap:.75rem; padding:var(--pad);
+            color:#cbd5e1; text-decoration:none; border-radius:12px; transition:.2s ease;
+            position:relative;
         }
+        .sidebar .menu a .bi{font-size:1.05rem; opacity:.9}
         .sidebar .menu a:hover,
-        .sidebar .menu a.active {
-            background: linear-gradient(90deg, rgba(255,0,255,.13), rgba(0,255,255,.13));
-            color: #fff;
+        .sidebar .menu a.active{
+            background:linear-gradient(90deg,rgba(255,0,255,.14),rgba(0,255,255,.14));
+            color:#fff;
         }
-        .sidebar .menu .section {
-            margin-top: 1rem; margin-bottom: .5rem;
-            padding: 0 .4rem; font-size: .75rem; letter-spacing: .06em; color: #94a3b8; text-transform: uppercase;
-        }
-
-        /* Main */
-        .main {
-            margin-left: 280px;
-            min-height: 100vh;
-            display: flex; flex-direction: column;
+        .sidebar .section{
+            margin:.75rem 0 .4rem; padding:0 .45rem;
+            font-size:.73rem; color:#94a3b8; text-transform:uppercase; letter-spacing:.12em;
         }
 
-        /* Topbar */
-        .topbar {
-            position: sticky; top: 0; z-index: 1020;
-            background: #ffffff; border-bottom: 1px solid #eef2f7;
+        /* ===== Main / Topbar ===== */
+        .main{ margin-left:270px; min-height:100vh; display:flex; flex-direction:column; }
+        .topbar{
+            position:sticky; top:0; z-index:1020;
+            background:#fff; border-bottom:1px solid var(--line);
         }
-        .topbar .search {
-            max-width: 520px; width: 100%;
-            border: 1px solid #e5e7eb; border-radius: 12px; padding: 0.5rem 0.75rem; background: #fafafa;
+        .topbar .search{
+            max-width:460px; width:100%;
+            border:1px solid #e5e7eb; border-radius:14px; padding:.5rem .8rem;
+            background:#fafafa; transition:.2s;
+        }
+        .topbar .search:focus{background:#fff; border-color:#cbd5e1; box-shadow:0 0 0 .25rem rgba(14,165,233,.12)}
+
+        /* ===== Cards & utilities ===== */
+        .card-soft{
+            background:var(--card); border:1px solid var(--line); border-radius:18px;
+            box-shadow:0 6px 18px rgba(2,8,20,.05); height:100%;
+        }
+        .section-title{
+            display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1rem;
+        }
+        .section-title h3{
+            font-size:1.05rem; margin:0; color:var(--ink-800);
+            display:flex; align-items:center; gap:.6rem;
+        }
+        .section-title h3 .dot{
+            width:10px;height:10px;border-radius:50%;
+            background:linear-gradient(135deg,var(--brand-1),var(--brand-2));
+            box-shadow:0 0 0 4px rgba(14,165,233,.08);
+        }
+        .soft-muted{color:var(--ink-600)}
+        .gradient-underline{ position:relative; display:inline-block; }
+        .gradient-underline:after{
+            content:""; position:absolute; left:0; right:0; bottom:-6px; height:3px; border-radius:999px;
+            background:linear-gradient(90deg,var(--brand-1),var(--brand-2));
         }
 
-        /* Cards */
-        .card-soft {
-            background: var(--card);
-            border: 1px solid #eef2f7;
-            border-radius: 16px;
-            box-shadow: 0 6px 20px rgba(2, 8, 20, 0.03);
+        /* ===== Glass containers ===== */
+        .glass-card{
+            background:rgba(255,255,255,.66);
+            backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+            border:1px solid rgba(255,255,255,.35); border-radius:16px;
+            box-shadow:0 6px 24px rgba(0,0,0,.06);
         }
 
-        .stat-pill {
-            display: inline-flex; align-items: center; gap: .5rem;
-            padding: .25rem .6rem; border-radius: 999px; font-size: .8rem;
-            background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb;
+        /* ===== Number badges ===== */
+        .number-badge{
+            --sz:46px; width:var(--sz); height:var(--sz);
+            font-size:18px; font-weight:700; border-radius:50%;
+            display:flex; align-items:center; justify-content:center; color:#fff; flex:0 0 var(--sz);
+            box-shadow:0 6px 16px rgba(0,0,0,.15);
+        }
+        .exp-badge{ background:linear-gradient(135deg,#ff512f,#dd2476); }
+        .cert-badge{ background:linear-gradient(135deg,#36d1dc,#5b86e5); }
+
+        /* ===== Timelines ===== */
+        /*.timeline {*/
+        /*    position: relative;       !* NEW *!*/
+        /*    max-height: none;         !* allow full height *!*/
+        /*    overflow: visible;        !* don’t clip children *!*/
+        /*}*/
+
+        .timeline {
+            max-height: 350px;
+            overflow-y: auto;
+            padding-right: .5rem; /* space for scrollbar */
         }
 
-        .badge-live {
-            border: 1px dashed rgba(255,0,255,.4);
-            background: radial-gradient(1200px 1200px at 0% 0%, rgba(255,0,255,.05), transparent 40%),
-            radial-gradient(1000px 1000px at 100% 0%, rgba(0,255,255,.05), transparent 40%);
-            color: #0f172a;
+
+
+
+        .timeline:before{
+            content:""; position:absolute; left:0; top:.4rem; bottom:.4rem; width:2px; border-radius:2px;
+            background:linear-gradient(180deg, rgba(15,23,42,.08), rgba(14,165,233,.25));
+        }
+        .timeline-item{
+            display:flex; gap:1rem; padding:1.1rem 0; border-bottom:1px dashed var(--line);
+        }
+        .timeline-item:last-child{ border-bottom:none; padding-bottom:.2rem }
+        .item-card{
+            background:linear-gradient(180deg,#ffffff 0%, #fcfdff 80%);
+            border:1px solid var(--line); border-radius:14px; padding:1rem 1rem;
+            width:100%; transition:.2s ease; position:relative;
+        }
+        .item-card:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(2,8,20,.06) }
+
+        .meta-row{ display:flex; flex-wrap:wrap; gap:.75rem; color:var(--ink-600); font-size:.9rem }
+        .meta-row .badge-soft{
+            background:#f3f4f6; color:#111827; border:1px solid #e5e7eb; border-radius:999px; padding:.25rem .6rem; font-weight:600;
         }
 
-        .gradient-underline {
-            position: relative; display: inline-block;
-        }
-        .gradient-underline::after {
-            content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 3px;
-            background: linear-gradient(90deg, var(--brand-1), var(--brand-2), var(--brand-3));
-            border-radius: 999px;
+        /* ===== Empty state ===== */
+        .empty{
+            border:2px dashed #e5e7eb; border-radius:16px; padding:2rem; text-align:center; color:var(--ink-600);
+            background:#fff;
         }
 
-        .table thead th { font-weight: 600; color: var(--ink-700); }
-        .table-hover tbody tr:hover { background: #fbfcfe; }
+        /* ===== Buttons ===== */
+        .btn-pill{ border-radius:999px }
+        .btn-glow{
+            position:relative; overflow:hidden;
+        }
+        .btn-glow:after{
+            content:""; position:absolute; inset:-40% -60%; background:conic-gradient(from 0deg, rgba(255,0,255,.25), rgba(0,255,255,.25), transparent 30%);
+            transform:rotate(0); animation:spin 6s linear infinite; pointer-events:none; filter:blur(14px);
+        }
+        @keyframes spin{to{transform:rotate(360deg)}}
 
-        .form-check-input:focus, .form-control:focus, .form-select:focus {
-            border-color: var(--brand-2); box-shadow: 0 0 0 0.2rem rgba(0, 255, 255, .15);
+        /* ===== Forms in glass ===== */
+        .glass-card label{ color:var(--ink-800) }
+        .glass-card p, .glass-card small, .glass-card a{ color:var(--ink-700) }
+
+        /* ===== Responsive sidebar collapse ===== */
+        @media (max-width: 991.98px){
+            .sidebar{ width:84px }
+            .sidebar .brand span, .sidebar .menu .label{ display:none }
+            .sidebar .menu a{ justify-content:center }
+            .main{ margin-left:84px }
         }
 
-        .btn-gradient {
-            background: linear-gradient(90deg, var(--brand-1), var(--brand-2));
-            border: none; color: #0b1020;
-        }
-        .btn-gradient:hover { filter: brightness(.95); }
-
-        .empty-state {
-            border: 2px dashed #e2e8f0; border-radius: 16px; padding: 2rem; text-align: center; color: var(--ink-500);
-            background: #ffffff;
-        }
-
-        @media (max-width: 991.98px) {
-            .sidebar { width: 88px; }
-            .sidebar .brand span, .sidebar .menu .label { display: none; }
-            .sidebar .menu a { justify-content: center; }
-            .sidebar .menu a i { margin: 0; }
-            .main { margin-left: 88px; }
+        /* ===== Small helpers ===== */
+        .clickable{ cursor:pointer }
+        .kbd{
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size:.8rem; background:#f3f4f6; border:1px solid #e5e7eb; border-bottom-width:2px;
+            padding:.1rem .4rem; border-radius:6px;
         }
     </style>
 </head>
 <body>
-<!-- Sidebar -->
+<!-- ============ Sidebar ============ -->
 <aside class="sidebar">
     <div class="brand">
-        <div class="logo"></div>
-        <span class="fw-semibold">DevLink</span>
+        <div class="logo" aria-hidden="true"></div>
+        <span>DevLink</span>
     </div>
+    <nav class="menu" aria-label="Primary">
+        <a th:href="@{/dashboard}" class="active"><i class="bi bi-speedometer2"></i><span class="label">Dashboard</span></a>
+        <a th:href="@{/profile}"><i class="bi bi-person"></i><span class="label">Profile</span></a>
+        <a th:href="@{/skills}"><i class="bi bi-layers"></i><span class="label">Skills</span></a>
+        <a th:href="@{/projects}"><i class="bi bi-kanban"></i><span class="label">Projects</span></a>
 
-    <nav class="menu">
-        <div>
-            <a th:href="@{/dashboard}" class="active"><i class="bi bi-speedometer2"></i><span class="label">Dashboard</span></a>
-            <a th:href="@{/profile}"><i class="bi bi-person"></i><span class="label">Profile</span></a>
-            <a th:href="@{/skills}"><i class="bi bi-layers"></i><span class="label">Skills</span></a>
-            <a th:href="@{/projects}"><i class="bi bi-kanban"></i><span class="label">Projects</span></a>
-        </div>
         <div class="section">Account</div>
-        <div>
-            <a th:href="@{/settings}"><i class="bi bi-gear"></i><span class="label">Settings</span></a>
-            <a th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i><span class="label">Logout</span></a>
-        </div>
+        <a th:href="@{/settings}"><i class="bi bi-gear"></i><span class="label">Settings</span></a>
+        <a th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i><span class="label">Logout</span></a>
     </nav>
 </aside>
 
-<!-- Main -->
+<!-- ========== Main ============ -->
 <main class="main">
     <!-- Topbar -->
     <header class="topbar card-soft py-3">
         <div class="container-fluid px-4">
-            <div class="d-flex align-items-center gap-3 justify-content-between">
+            <div class="d-flex align-items-center justify-content-between gap-3">
                 <div class="d-flex align-items-center gap-3">
                     <h1 class="h5 mb-0 gradient-underline">Your Dashboard</h1>
-                    <span class="stat-pill badge-live">Live</span>
+                    <span class="soft-muted d-none d-md-inline">Experience & Certification</span>
                 </div>
-                <form class="d-none d-md-flex align-items-center gap-2" role="search">
-                    <i class="bi bi-search"></i>
-                    <input class="search form-control form-control-sm" type="search" placeholder="Search experiences, certifications…" aria-label="Search" />
+
+                <form class="d-none d-md-flex align-items-center gap-2" role="search" onsubmit="return false">
+                    <i class="bi bi-search soft-muted"></i>
+                    <input class="search form-control form-control-sm" id="globalSearch" type="search" placeholder="Search experience or certification…" aria-label="Search"/>
                 </form>
-                <div class="d-flex align-items-center gap-3">
-                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalQuickAdd"><i class="bi bi-plus-circle"></i> Quick Add</button>
+
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-sm btn-outline-secondary btn-pill" type="button" data-bs-toggle="modal" data-bs-target="#modalQuickAdd">
+                        <i class="bi bi-plus-circle"></i> Quick Add
+                    </button>
                     <div class="dropdown">
                         <button class="btn btn-sm btn-light border dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img th:src="${profileImageUrl}" src="https://via.placeholder.com/32" alt="avatar" class="rounded-circle me-2" width="32" height="32" />
-                            <span th:text="${username}">Admin</span>
+                            <img th:src="${profileImageUrl}" src="https://via.placeholder.com/32" alt="avatar" class="rounded-circle me-2" width="32" height="32"/>
+                            <span th:text="${username}">User</span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person"></i> Profile</a></li>
                             <li><a class="dropdown-item" th:href="@{/settings}"><i class="bi bi-gear"></i> Settings</a></li>
-                            <li><hr class="dropdown-divider" /></li>
+                            <li><hr class="dropdown-divider"/></li>
                             <li><a class="dropdown-item" th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
                         </ul>
                     </div>
@@ -206,407 +249,386 @@
 
     <!-- Content -->
     <section class="container-fluid px-4 py-4">
-        <!-- Stats Row -->
+
+        <!-- ===== Overview KPIs ===== -->
+        <div class="row g-3 mb-3">
+            <div class="col-6 col-lg-3">
+                <div class="card-soft p-3 d-flex gap-2 align-items-center">
+                    <div class="number-badge exp-badge" aria-hidden="true"><i class="bi bi-briefcase"></i></div>
+                    <div>
+                        <div class="soft-muted small">Total Experiences</div>
+                        <div class="fs-5 fw-semibold" th:text="${#lists.size(experiences)}">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="card-soft p-3 d-flex gap-2 align-items-center">
+                    <div class="number-badge cert-badge" aria-hidden="true"><i class="bi bi-award"></i></div>
+                    <div>
+                        <div class="soft-muted small">Certifications</div>
+                        <div class="fs-5 fw-semibold" th:text="${#lists.size(certifications)}">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="card-soft p-3 d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="dot" aria-hidden="true"></span>
+                        <div>
+                            <div class="soft-muted small">Career Progress</div>
+                            <div class="fw-semibold">Keep your profile fresh — add your latest role or certificate.</div>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a th:href="@{/experience/addNew}" class="btn btn-sm btn-primary btn-pill"><i class="bi bi-plus"></i> Add Experience</a>
+                        <a th:href="@{/certificate/addNew}" class="btn btn-sm btn-outline-primary btn-pill">Add Certification</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Filters ===== -->
         <div class="row g-3 mb-4">
-            <div class="col-12 col-md-6">
-                <div class="card-soft p-3 d-flex flex-column">
-                    <div class="text-secondary mb-3">Experiences</div>
-
-                    <!-- Loop through user's experiences -->
-                    <div th:each="exp : ${experiences}" class="mb-3 border-bottom pb-2">
-                        <h6 class="mb-1">
-                            <i class="bi bi-briefcase text-muted me-2"></i>
-                            <span th:text="${exp.title}"></span>
-                            <small class="text-muted" th:text="'@ ' + ${exp.company}"></small>
-                        </h6>
-
-                        <p class="mb-1">
-                            <small th:text="${exp.description}"></small>
-                        </p>
-
-                        <p class="mb-0">
-                            <i class="bi bi-geo-alt text-muted me-1"></i>
-                            <small th:text="${exp.location}"></small>
-                            <br>
-                            <i class="bi bi-calendar text-muted me-1"></i>
-                            <small th:text="${#temporals.format(exp.startDate, 'MMM yyyy')}"></small>
-                            -
-                            <small th:text="${exp.endDate != null ? #temporals.format(exp.endDate, 'MMM yyyy') : 'Present'}"></small>
-                        </p>
+            <div class="col-12">
+                <div class="glass-card p-3 d-flex flex-wrap gap-2 align-items-center">
+                    <div class="soft-muted"><i class="bi bi-funnel"></i> Quick Filters:</div>
+                    <div class="btn-group" role="group" aria-label="Filters">
+                        <button class="btn btn-sm btn-outline-secondary btn-pill active" data-filter="all">All</button>
+                        <button class="btn btn-sm btn-outline-secondary btn-pill" data-filter="experiences">Experiences</button>
+                        <button class="btn btn-sm btn-outline-secondary btn-pill" data-filter="certifications">Certifications</button>
                     </div>
-                </div>
-            </div>
-
-
-            <div class="col-12 col-md-4">
-                <div class="card-soft p-3 d-flex justify-content-between align-items-start">
-                    <div>
-                        <div class="text-secondary">Certifications</div>
-                        <div class="display-6" th:text="${stats.certCount}">7</div>
-                    </div>
-                    <i class="bi bi-patch-check fs-2 text-muted"></i>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card-soft p-3 d-flex justify-content-between align-items-start">
-                    <div>
-                        <div class="text-secondary">Last Updated</div>
-                        <div class="h3" th:text="${#temporals.format(stats.lastUpdated, 'dd MMM yyyy')}">16 Aug 2025</div>
-                    </div>
-                    <i class="bi bi-clock-history fs-2 text-muted"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tabs -->
-        <div class="card-soft p-3">
-            <ul class="nav nav-tabs" id="dashTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="exp-tab" data-bs-toggle="tab" data-bs-target="#exp" type="button" role="tab" aria-controls="exp" aria-selected="true">
-                        <i class="bi bi-briefcase"></i> Experiences
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="cert-tab" data-bs-toggle="tab" data-bs-target="#cert" type="button" role="tab" aria-controls="cert" aria-selected="false">
-                        <i class="bi bi-patch-check"></i> Certifications
-                    </button>
-                </li>
-            </ul>
-            <div class="tab-content pt-3" id="dashTabsContent">
-                <!-- Experiences -->
-                <div class="tab-pane fade show active" id="exp" role="tabpanel" aria-labelledby="exp-tab">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <select class="form-select form-select-sm" style="max-width:180px">
-                                <option selected>All types</option>
-                                <option>Full-time</option>
-                                <option>Part-time</option>
-                                <option>Contract</option>
-                                <option>Internship</option>
-                            </select>
-                            <select class="form-select form-select-sm" style="max-width:180px">
-                                <option selected>Sort by: Latest</option>
-                                <option>Oldest</option>
-                                <option>Company (A-Z)</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-sm btn-gradient" data-bs-toggle="modal" data-bs-target="#modalAddExperience"><i class="bi bi-plus-lg"></i> Add Experience</button>
-                    </div>
-
-                    <div th:if="${#lists.isEmpty(experiences)}" class="empty-state">
-                        <i class="bi bi-briefcase fs-2 d-block mb-2"></i>
-                        <div class="fw-semibold">No experiences yet</div>
-                        <div class="small">Click <strong>Add Experience</strong> to get started.</div>
-                    </div>
-
-                    <div class="table-responsive" th:if="${!#lists.isEmpty(experiences)}">
-                        <table class="table table-hover align-middle">
-                            <thead>
-                            <tr>
-                                <th>Role</th>
-                                <th>Company</th>
-                                <th>Location</th>
-                                <th>Period</th>
-                                <th>Type</th>
-                                <th>Highlights</th>
-                                <th class="text-end">Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="exp : ${experiences}">
-                                <td>
-                                    <div class="fw-semibold" th:text="${exp.title}">Software Engineer</div>
-                                    <div class="text-muted small" th:text="${exp.stack}">Spring Boot, Thymeleaf</div>
-                                </td>
-                                <td th:text="${exp.company}">DevLink Inc.</td>
-                                <td th:text="${exp.location}">Lagos, NG</td>
-                                <td>
-                                    <span th:text="${#temporals.format(exp.startDate, 'MMM yyyy')}">Jan 2022</span>
-                                    –
-                                    <span th:text="${exp.current} ? 'Present' : ${#temporals.format(exp.endDate, 'MMM yyyy')}">Present</span>
-                                </td>
-                                <td><span class="badge text-bg-light border" th:text="${exp.employmentType}">Full-time</span></td>
-                                <td>
-                                    <ul class="small m-0 ps-3" th:utext="${exp.highlightsHtml}">
-                                        <li>Built scalable APIs</li>
-                                    </ul>
-                                </td>
-                                <td class="text-end">
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <a class="btn btn-outline-secondary" th:href="@{'/dashboard/experience/' + ${exp.id}}"><i class="bi bi-pencil"></i> Edit</a>
-                                        <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#modalDelete" th:attr="data-id=${exp.id}, data-type='experience', data-title=${exp.title}"><i class="bi bi-trash"></i> Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Certifications -->
-                <div class="tab-pane fade" id="cert" role="tabpanel" aria-labelledby="cert-tab">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <select class="form-select form-select-sm" style="max-width:220px">
-                                <option selected>Status: All</option>
-                                <option>Valid</option>
-                                <option>Expired</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-sm btn-gradient" data-bs-toggle="modal" data-bs-target="#modalAddCert"><i class="bi bi-plus-lg"></i> Add Certification</button>
-                    </div>
-
-                    <div th:if="${#lists.isEmpty(certifications)}" class="empty-state">
-                        <i class="bi bi-patch-check fs-2 d-block mb-2"></i>
-                        <div class="fw-semibold">No certifications yet</div>
-                        <div class="small">Click <strong>Add Certification</strong> to add one.</div>
-                    </div>
-
-                    <div class="table-responsive" th:if="${!#lists.isEmpty(certifications)}">
-                        <table class="table table-hover align-middle">
-                            <thead>
-                            <tr>
-                                <th>Certification</th>
-                                <th>Issuer</th>
-                                <th>Issued</th>
-                                <th>Expires</th>
-                                <th>Credential ID</th>
-                                <th>Verify</th>
-                                <th class="text-end">Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="c : ${certifications}">
-                                <td>
-                                    <div class="fw-semibold" th:text="${c.name}">AWS Certified Developer – Associate</div>
-                                    <span class="badge text-bg-light border" th:if="${c.category != null}" th:text="${c.category}">Cloud</span>
-                                </td>
-                                <td th:text="${c.issuer}">Amazon Web Services</td>
-                                <td th:text="${#temporals.format(c.issueDate, 'dd MMM yyyy')}">02 Feb 2024</td>
-                                <td>
-                                    <span th:if="${c.expireDate != null}" th:text="${#temporals.format(c.expireDate, 'dd MMM yyyy')}">02 Feb 2027</span>
-                                    <span th:if="${c.expireDate == null}" class="text-muted">No expiry</span>
-                                </td>
-                                <td th:text="${c.credentialId}">ABC-12345</td>
-                                <td>
-                                    <a th:href="${c.verifyUrl}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary"><i class="bi bi-box-arrow-up-right"></i> Verify</a>
-                                </td>
-                                <td class="text-end">
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <a class="btn btn-outline-secondary" th:href="@{'/dashboard/cert/' + ${c.id}}"><i class="bi bi-pencil"></i> Edit</a>
-                                        <button class="btn btn-outline-danger" type="button" data-bs-toggle="modal" data-bs-target="#modalDelete" th:attr="data-id=${c.id}, data-type='cert', data-title=${c.name}"><i class="bi bi-trash"></i> Delete</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                    <div class="ms-auto d-flex align-items-center gap-2">
+                        <label class="soft-muted small mb-0">Sort by</label>
+                        <select class="form-select form-select-sm w-auto" id="sortSelect" aria-label="Sort list">
+                            <option value="newest" selected>Newest first</option>
+                            <option value="oldest">Oldest first</option>
+                            <option value="title">Title A–Z</option>
+                        </select>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- ===== Experiences ===== -->
+        <div class="row g-4 list-group-root" data-section="experiences">
+            <div class="col-12">
+                <div class="card-soft p-4">
+                    <div class="section-title">
+                        <h3><span class="dot" aria-hidden="true"></span> Experiences</h3>
+                        <div class="d-flex gap-2">
+                            <a th:href="@{/experience/addNew}" class="btn btn-sm btn-primary btn-pill"><i class="bi bi-plus"></i> Add</a>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.isEmpty(experiences)}" class="empty">
+                        <i class="bi bi-briefcase soft-muted fs-4 d-block mb-2"></i>
+                        No experiences yet. <a th:href="@{/experience/addNew}" class="fw-semibold">Add Your Expereince</a>.
+                    </div>
+
+                    <div class="timeline" id="experienceList">
+                        <div th:each="exp, iterStat : ${experiences}" class="timeline-item align-items-start experience-item" data-title="${exp.title}">
+                            <div class="number-badge exp-badge me-1 mt-1">
+                                <span th:text="${iterStat.index + 1}">1</span>
+                            </div>
+
+                            <div class="item-card">
+                                <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+                                    <div>
+                                        <h5 class="mb-1" th:text="${exp.title}">Job Title</h5>
+                                        <div class="soft-muted">
+                                            <i class="bi bi-building"></i>
+                                            <span th:text="${exp.company}">Company</span>
+                                            •
+                                            <i class="bi bi-geo-alt"></i>
+                                            <span th:text="${exp.location}">Remote</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-nowrap soft-muted">
+                                        <i class="bi bi-calendar-week"></i>
+                                        <small>
+                                            <span th:text="${#temporals.format(exp.startDate, 'MMM yyyy')}">Jan 2023</span>
+                                            –
+                                            <span th:text="${exp.endDate != null ? #temporals.format(exp.endDate, 'MMM yyyy') : 'Present'}">Present</span>
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <p class="mt-2 mb-2" th:text="${exp.description}">
+                                    Description of responsibilities, impact and technologies used.
+                                </p>
+
+<!--                                <div class="meta-row">-->
+<!--                                    <span class="badge-soft"><i class="bi bi-code-slash"></i> <span th:text="${exp.stack != null ? exp.stack : 'Tech Stack'}">Tech Stack</span></span>-->
+<!--                                    <span class="badge-soft"><i class="bi bi-graph-up"></i> <span th:text="${exp.seniority != null ? exp.seniority : 'Level'}">Level</span></span>-->
+<!--                                </div>-->
+
+                                <div class="d-flex gap-2 mt-3">
+                                    <a th:href="@{/experience/edit-form/{id}(id=${exp.id})}" class="btn btn-sm btn-outline-primary btn-pill">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </a>
+                                    <a th:href="@{/experience/delete/{id}(id=${exp.id})}" onclick="return confirm('Delete this experience?');" class="btn btn-sm btn-outline-danger btn-pill">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </div>
+                        </div><!-- /timeline-item -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== Certifications ===== -->
+        <div class="row g-4 mt-1 list-group-root" data-section="certifications">
+            <div class="col-12">
+                <div class="card-soft p-4">
+                    <div class="section-title">
+                        <h3><span class="dot" aria-hidden="true"></span> Certifications</h3>
+                        <div class="d-flex gap-2">
+                            <a th:href="@{/certificate/new}" class="btn btn-sm btn-primary btn-pill"><i class="bi bi-plus"></i> Add</a>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.isEmpty(certifications)}" class="empty">
+                        <i class="bi bi-award soft-muted fs-4 d-block mb-2"></i>
+                        No certifications yet. <a th:href="@{/certificate/new}" class="fw-semibold">Add your first certificate</a>.
+                    </div>
+
+                    <div class="timeline" id="certList">
+                        <div th:each="cert, iterStat : ${certifications}" class="timeline-item align-items-start certification-item" data-title="${cert.title}">
+                            <div class="number-badge cert-badge me-1 mt-1">
+                                <span th:text="${iterStat.index + 1}">1</span>
+                            </div>
+
+                            <div class="item-card">
+                                <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+                                    <div>
+                                        <h5 class="mb-1" th:text="${cert.title}">Certification Title</h5>
+                                        <div class="soft-muted">
+                                            <i class="bi bi-building-check"></i>
+                                            <span th:text="${cert.issuingOrganization}">Issuer</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-nowrap soft-muted">
+                                        <i class="bi bi-calendar2-check"></i>
+                                        <small th:text="${#temporals.format(cert.dateIssued, 'MMM yyyy')}">Jun 2024</small>
+                                    </div>
+                                </div>
+
+                                <div class="mt-2 mb-2">
+                                    <a th:href="${cert.certificateUrl}" target="_blank" class="btn btn-sm btn-outline-secondary btn-pill">
+                                        <i class="bi bi-box-arrow-up-right"></i> View Certificate
+                                    </a>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <a th:href="@{/certificate/edit-form/{id}(id=${cert.id})}" class="btn btn-sm btn-outline-primary btn-pill">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </a>
+                                    <a th:href="@{/certificate/delete/{id}(id=${cert.id})}" onclick="return confirm('Delete this certification?');" class="btn btn-sm btn-outline-danger btn-pill">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </div>
+                        </div><!-- /timeline-item -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!--        Skils start ========= ; -->
+
+
+        <!-- ===== Skills block ===== -->
+        <div class="row g-4 mt-1 list-group-root" data-section="skills">
+            <div class="col-12">
+                <div class="card-soft p-4">
+                    <div class="section-title">
+                        <h3><span class="dot" aria-hidden="true"></span> Skills</h3>
+                        <div class="d-flex gap-2">
+                            <a th:href="@{/skill/new}" class="btn btn-sm btn-primary btn-pill"><i class="bi bi-plus"></i> Add</a>
+                        </div>
+                    </div>
+
+                    <div th:each="skill : ${user.getSkills()}" class="skill-item" >
+                        <span th:text="${skill.getName()}" class="fw-semibold">Add your first certificate</span>.
+                    </div>
+                            </div>
+                        </div><!-- /timeline-item -->
+                    </div>
+
+
+
+        <!--        ========== skils end ========-->
+
+
     </section>
 </main>
 
-<!-- Quick Add Modal -->
-<div class="modal fade" id="modalQuickAdd" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Quick Add</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="d-grid gap-2">
-                    <button class="btn btn-outline-secondary" data-bs-target="#modalAddExperience" data-bs-toggle="modal"><i class="bi bi-briefcase"></i> Add Experience</button>
-                    <button class="btn btn-outline-secondary" data-bs-target="#modalAddCert" data-bs-toggle="modal"><i class="bi bi-patch-check"></i> Add Certification</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Add Experience Modal -->
-<div class="modal fade" id="modalAddExperience" tabindex="-1" aria-labelledby="addExperienceLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addExperienceLabel">Add Experience</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form th:action="@{/dashboard/experience}" method="post">
-                <div class="modal-body">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Job Title</label>
-                            <input name="title" class="form-control" placeholder="e.g., Backend Engineer" required />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Company</label>
-                            <input name="company" class="form-control" placeholder="e.g., DevLink" required />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Location</label>
-                            <input name="location" class="form-control" placeholder="City, Country" />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Employment Type</label>
-                            <select name="employmentType" class="form-select">
-                                <option>Full-time</option>
-                                <option>Part-time</option>
-                                <option>Contract</option>
-                                <option>Internship</option>
-                                <option>Freelance</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Start Date</label>
-                            <input type="month" name="startDate" class="form-control" required />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">End Date</label>
-                            <input type="month" name="endDate" class="form-control" />
-                            <div class="form-text">Leave blank if current role.</div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="current" id="expCurrent">
-                                <label class="form-check-label" for="expCurrent">This is my current role</label>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Highlights (Markdown/HTML allowed)</label>
-                            <textarea name="highlightsHtml" rows="4" class="form-control" placeholder="<ul><li>Delivered X</li><li>Improved Y</li></ul>"></textarea>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Tech Stack (comma-separated)</label>
-                            <input name="stack" class="form-control" placeholder="Spring Boot, Thymeleaf, PostgreSQL" />
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-gradient">Save Experience</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Add Certification Modal -->
-<div class="modal fade" id="modalAddCert" tabindex="-1" aria-labelledby="addCertLabel" aria-hidden="true">
+<!-- ===== Quick Add Modal ===== -->
+<div class="modal fade" id="modalQuickAdd" tabindex="-1" aria-labelledby="modalQuickAddLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addCertLabel">Add Certification</h5>
+                <h5 class="modal-title" id="modalQuickAddLabel">Quick Add</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form th:action="@{/dashboard/cert}" method="post">
-                <div class="modal-body">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                    <div class="row g-3">
-                        <div class="col-12">
-                            <label class="form-label">Certification Name</label>
-                            <input name="name" class="form-control" placeholder="e.g., Google Associate Cloud Engineer" required />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Issuer</label>
-                            <input name="issuer" class="form-control" placeholder="e.g., Google" required />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Category</label>
-                            <input name="category" class="form-control" placeholder="e.g., Cloud, Security" />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Issue Date</label>
-                            <input type="date" name="issueDate" class="form-control" required />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Expiry Date</label>
-                            <input type="date" name="expireDate" class="form-control" />
-                            <div class="form-text">Leave blank if no expiry.</div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Credential ID</label>
-                            <input name="credentialId" class="form-control" />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Verification URL</label>
-                            <input type="url" name="verifyUrl" class="form-control" placeholder="https://" />
-                        </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" id="quickAddTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="add-exp-tab" data-bs-toggle="tab" data-bs-target="#add-exp" type="button" role="tab" aria-controls="add-exp" aria-selected="true">
+                            <i class="bi bi-briefcase"></i> Experience
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="add-cert-tab" data-bs-toggle="tab" data-bs-target="#add-cert" type="button" role="tab" aria-controls="add-cert" aria-selected="false">
+                            <i class="bi bi-award"></i> Certification
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content pt-3">
+                    <!-- Quick Experience -->
+                    <div class="tab-pane fade show active" id="add-exp" role="tabpanel" aria-labelledby="add-exp-tab">
+                        <form th:action="@{/experience/add}" th:object="${exp}" method="post">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Job Title</label>
+                                    <input class="form-control" th:field="*{title}" required/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Company</label>
+                                    <input class="form-control" th:field="*{company}" required/>
+                                </div>
+<!--                                <div class="col-12">-->
+<!--                                    <label class="form-label">Location</label>-->
+<!--                                    <input class="form-control" th:field="*{location}"/>-->
+<!--                                </div>-->
+
+                                <div class="col-12">
+                                <label class="form-label">Location</label>
+                                <select class="form-control" th:field="*{location}" required>
+                                    <option value="">Select location</option>
+                                    <option value="Remote">Remote</option>
+                                    <option value="Onsite">Onsite</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                </select>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label">Description</label>
+                                    <textarea class="form-control" th:field="*{description}" rows="3"></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Start Date</label>
+                                    <input type="date" class="form-control" th:field="*{startDate}" required/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">End Date</label>
+                                    <input type="date" class="form-control" th:field="*{endDate}"/>
+                                    <div class="form-text">Leave empty if current</div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2 mt-3">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary btn-glow">Save Experience</button>
+                            </div>
+                        </form>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-gradient">Save Certification</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
-<!-- Delete Confirmation Modal (shared) -->
-<div class="modal fade" id="modalDelete" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirm Deletion</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <!-- Quick Certification -->
+                    <div class="tab-pane fade" id="add-cert" role="tabpanel" aria-labelledby="add-cert-tab">
+                        <form th:action="@{/certificate/add}" th:object="${cert}" method="post">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label">Title</label>
+                                    <input class="form-control" th:field="*{title}" required/>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Issuing Organization</label>
+                                    <input class="form-control" th:field="*{issuingOrganization}" required/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Date Issued</label>
+                                    <input type="date" class="form-control" th:field="*{dateIssued}" required/>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Certificate URL</label>
+                                    <input class="form-control" th:field="*{certificateUrl}" placeholder="https://…"/>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end gap-2 mt-3">
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary btn-glow">Save Certification</button>
+                            </div>
+                        </form>
+                    </div>
+                </div><!-- /tab-content -->
             </div>
-            <form id="deleteForm" th:action="@{/dashboard/delete}" method="post">
-                <div class="modal-body">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                    <input type="hidden" name="_method" value="delete" />
-                    <input type="hidden" name="type" id="deleteType" />
-                    <input type="hidden" name="id" id="deleteId" />
-                    <p class="mb-0">You're about to delete <strong id="deleteTitle">this item</strong>. This action cannot be undone.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Delete</button>
-                </div>
-            </form>
         </div>
     </div>
 </div>
 
-<!-- Toasts -->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080">
-    <div id="toastSaved" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body"><i class="bi bi-check-circle me-2"></i>Saved successfully.</div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-    </div>
-</div>
-
-<!-- Scripts -->
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Minimal UX helpers (search/filter/sort on the client for better feel) -->
 <script>
-    // Populate shared delete modal with data attributes
-    const deleteModal = document.getElementById('modalDelete');
-    if (deleteModal) {
-        deleteModal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const id = button?.getAttribute('data-id');
-            const type = button?.getAttribute('data-type');
-            const title = button?.getAttribute('data-title') || 'this item';
-            document.getElementById('deleteId').value = id || '';
-            document.getElementById('deleteType').value = type || '';
-            document.getElementById('deleteTitle').textContent = title;
-
-            // Set form action dynamically if you prefer type-specific routes
-            // Example: /dashboard/experience/{id} or /dashboard/cert/{id}
-            // document.getElementById('deleteForm').setAttribute('action', `/dashboard/${type}/${id}`);
+    // Global quick search (client-side)
+    (function(){
+        const q = document.getElementById('globalSearch');
+        if(!q) return;
+        q.addEventListener('input', function(){
+            const term = this.value.trim().toLowerCase();
+            document.querySelectorAll('.experience-item, .certification-item').forEach(el=>{
+                const title = (el.getAttribute('data-title') || '').toLowerCase();
+                el.style.display = title.includes(term) ? '' : 'none';
+            });
         });
-    }
+    })();
 
-    // Example: show toast based on URL param ?saved=true (optional UX)
-    const url = new URL(window.location.href);
-    if (url.searchParams.get('saved') === 'true') {
-        const toastEl = document.getElementById('toastSaved');
-        if (toastEl) new bootstrap.Toast(toastEl).show();
-    }
+    // Section filter (All / Experiences / Certifications)
+    (function(){
+        const buttons = document.querySelectorAll('[data-filter]');
+        buttons.forEach(btn=>{
+            btn.addEventListener('click', ()=>{
+                buttons.forEach(b=>b.classList.remove('active'));
+                btn.classList.add('active');
+                const key = btn.getAttribute('data-filter');
+                document.querySelectorAll('[data-section]').forEach(sec=>{
+                    if(key === 'all'){ sec.style.display = ''; }
+                    else { sec.style.display = (sec.getAttribute('data-section') === key) ? '' : 'none'; }
+                });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    })();
+
+    // Simple sort demo
+    (function(){
+        const select = document.getElementById('sortSelect');
+        if(!select) return;
+        select.addEventListener('change', ()=>{
+            // reverse order for "oldest" >> This is purely visual as the best is if i do the sorting from the controller
+            const expList = document.getElementById('experienceList');
+            const certList = document.getElementById('certList');
+            const sort = select.value;
+
+            [expList, certList].forEach(list=>{
+                if(!list) return;
+                const items = Array.from(list.children);
+                if(sort === 'oldest'){
+                      items.reverse().forEach(i=>list.appendChild(i));
+                }else if(sort === 'title'){
+                    items.sort((a,b)=>{
+                        const at = (a.getAttribute('data-title')||'').toLowerCase();
+                        const bt = (b.getAttribute('data-title')||'').toLowerCase();
+                        return at.localeCompare(bt);
+                    }).forEach(i=>list.appendChild(i));
+                }else{
+                    // newest (original DOM order) – do nothing
+                }
+            });
+        });
+    })();
 </script>
 </body>
 </html>

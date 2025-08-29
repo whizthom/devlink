@@ -8,5 +8,7 @@ public interface CertificationService {
     List<Certification> getCertifications();
     Certification getCertificationById(Long id);
     Certification addCertification(Certification certification);
+    void deleteById(Long id);
+    Certification findCertificationById(Long id);
 
 }

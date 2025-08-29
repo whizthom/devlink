@@ -10,4 +10,5 @@ public interface ExperienceService {
     Experience getExperienceById(Long id);
     Experience addExperience(Experience experience);
     List<Experience> findByUser(User user);
+    void deleteExperienceById(Long id);
 }
