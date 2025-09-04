@@ -116,6 +116,7 @@
         }
         .exp-badge{ background:linear-gradient(135deg,#ff512f,#dd2476); }
         .cert-badge{ background:linear-gradient(135deg,#36d1dc,#5b86e5); }
+        .skill-badge{background:linear-gradient(135deg,#ff00ff, #670058); }
 
         /* ===== Timelines ===== */
         /*.timeline {*/
@@ -200,9 +201,9 @@
     </div>
     <nav class="menu" aria-label="Primary">
         <a th:href="@{/dashboard}" class="active"><i class="bi bi-speedometer2"></i><span class="label">Dashboard</span></a>
-        <a th:href="@{/profile}"><i class="bi bi-person"></i><span class="label">Profile</span></a>
-        <a th:href="@{/skills}"><i class="bi bi-layers"></i><span class="label">Skills</span></a>
-        <a th:href="@{/projects}"><i class="bi bi-kanban"></i><span class="label">Projects</span></a>
+        <a th:href="@{/link/view}"><i class="bi bi-person"></i><span class="label">Link Up</span></a>
+        <a th:href="@{/skill}"><i class="bi bi-layers"></i><span class="label">All Skills</span></a>
+        <a th:href="@{/project/view}"><i class="bi bi-kanban"></i><span class="label">Projects</span></a>
 
         <div class="section">Account</div>
         <a th:href="@{/settings}"><i class="bi bi-gear"></i><span class="label">Settings</span></a>
@@ -270,7 +271,16 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-6">
+            <div class="col-6 col-lg-3">
+                <div class="card-soft p-3 d-flex gap-2 align-items-center">
+                    <div class="number-badge skill-badge" aria-hidden="true"><i class="bi bi-layers"></i></div>
+                    <div>
+                        <div class="soft-muted small">Skills</div>
+                        <div class="fs-5 fw-semibold" th:text="${#lists.size(user.getSkills())}">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-12">
                 <div class="card-soft p-3 d-flex justify-content-between align-items-center">
                     <div class="d-flex align-items-center gap-2">
                         <span class="dot" aria-hidden="true"></span>
@@ -439,22 +449,54 @@
 
 
         <!-- ===== Skills block ===== -->
+<!--        <div class="row g-4 mt-1 list-group-root" data-section="skills">-->
+<!--            <div class="col-12">-->
+<!--                <div class="card-soft p-4">-->
+<!--                    <div class="section-title">-->
+<!--                        <h3><span class="dot" aria-hidden="true"></span> Skills</h3>-->
+<!--                        <div class="d-flex gap-2">-->
+<!--                            <a th:href="@{/skill/new}" class="btn btn-sm btn-primary btn-pill"><i class="bi bi-plus"></i> Add</a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+<!--                    <div th:each="skill : ${user.getSkills()}" class="skill-item" >-->
+<!--                        <span th:text="${skill.getName()}" class="fw-semibold">Add your first certificate</span>.-->
+<!--                    </div>-->
+<!--                            </div>-->
+<!--                        </div>&lt;!&ndash; /timeline-item &ndash;&gt;-->
+<!--                    </div>-->
+
         <div class="row g-4 mt-1 list-group-root" data-section="skills">
             <div class="col-12">
                 <div class="card-soft p-4">
-                    <div class="section-title">
+                    <div class="section-title d-flex justify-content-between align-items-center">
                         <h3><span class="dot" aria-hidden="true"></span> Skills</h3>
                         <div class="d-flex gap-2">
-                            <a th:href="@{/skill/new}" class="btn btn-sm btn-primary btn-pill"><i class="bi bi-plus"></i> Add</a>
+                            <a th:href="@{/skill/new}" class="btn btn-sm btn-primary btn-pill">
+                                <i class="bi bi-plus"></i> Add
+                            </a>
                         </div>
                     </div>
 
-                    <div th:each="skill : ${user.getSkills()}" class="skill-item" >
-                        <span th:text="${skill.getName()}" class="fw-semibold">Add your first certificate</span>.
+                    <div th:each="skill : ${user.skills}" class="skill-item d-flex justify-content-between align-items-center border-bottom py-2">
+                        <!-- Skill Name -->
+                        <span th:text="${skill.name}" class="fw-semibold"></span>
+
+                        <!-- Action buttons -->
+                        <div class="btn-group">
+                            <!-- Delete -->
+                            <a th:href="@{/skill/remove/{id}(id=${skill.id})}"
+                               class="btn btn-sm btn-danger btn-pill"
+                               onclick="return confirm('Are you sure you want to delete this skill?');">
+                                <i class="bi bi-trash"></i> Remove
+                            </a>
+                        </div>
                     </div>
-                            </div>
-                        </div><!-- /timeline-item -->
-                    </div>
+
+                </div>
+            </div><!-- /col -->
+        </div>
+
 
 
 
