@@ -131,9 +131,6 @@
             padding-right: .5rem; /* space for scrollbar */
         }
 
-
-
-
         .timeline:before{
             content:""; position:absolute; left:0; top:.4rem; bottom:.4rem; width:2px; border-radius:2px;
             background:linear-gradient(180deg, rgba(15,23,42,.08), rgba(14,165,233,.25));
@@ -206,7 +203,7 @@
         <a th:href="@{/project/view}"><i class="bi bi-kanban"></i><span class="label">Projects</span></a>
 
         <div class="section">Account</div>
-        <a th:href="@{/settings}"><i class="bi bi-gear"></i><span class="label">Settings</span></a>
+        <a th:href="@{/image/upload}"><i class="bi bi-gear"></i><span class="label">Change Profile Pics</span></a>
         <a th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i><span class="label">Logout</span></a>
     </nav>
 </aside>
@@ -218,7 +215,7 @@
         <div class="container-fluid px-4">
             <div class="d-flex align-items-center justify-content-between gap-3">
                 <div class="d-flex align-items-center gap-3">
-                    <h1 class="h5 mb-0 gradient-underline">Your Dashboard</h1>
+                    <h1 class="h5 mb-0 gradient-underline">Your Projects</h1>
                     <span class="soft-muted d-none d-md-inline">Experience & Certification</span>
                 </div>
 

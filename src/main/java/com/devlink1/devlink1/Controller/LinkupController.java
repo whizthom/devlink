@@ -1,5 +1,6 @@
 package com.devlink1.devlink1.Controller;
 
+import com.devlink1.devlink1.Entity.Project;
 import com.devlink1.devlink1.Entity.User;
 import com.devlink1.devlink1.Service.CertificationService.CertificationService;
 import com.devlink1.devlink1.Service.CommentService.CommentService;
@@ -50,8 +51,12 @@ public class LinkupController {
         // get all users
         List<User> users = userService.getAllUsers();
 
+        //get all projects
+        List<Project> projects = projectService.getAllProjects();
+
         model.addAttribute("users", users);
         model.addAttribute("currentUser", currentUser);
+        model.addAttribute("projects", projects);
 
         return"link-up";
     }

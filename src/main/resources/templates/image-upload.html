@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>DevLink | Upload Image</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <style>
+        body {
+            background: #f8f9fa;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .upload-card {
+            max-width: 500px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+        }
+        .upload-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 1.5rem;
+            padding: 3px;
+            background: linear-gradient(135deg, #ff00ff, #00ffff, #ff00ff);
+            /*-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);*/
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+        .preview-img {
+            max-width: 100%;
+            border-radius: 1rem;
+            margin-top: 1rem;
+            display: none;
+        }
+        .btn-gradient {
+            background: linear-gradient(90deg, #ff00ff, #00ffff);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 50px;
+            padding: 0.6rem 1.5rem;
+            transition: 0.3s ease-in-out;
+        }
+        .btn-gradient:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="upload-card">
+        <h4 class="mb-3 text-center">Upload Profile Image</h4>
+
+        <form th:action="@{/upload}" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="file" class="form-label fw-semibold">Choose Image</label>
+                <input class="form-control" type="file" id="file" name="file" accept="image/*" onchange="previewImage(event)" required>
+            </div>
+
+            <img id="preview" class="preview-img" alt="Image preview">
+
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn-gradient">
+                    <i class="bi bi-cloud-upload me-2"></i> Upload
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function previewImage(event) {
+        const preview = document.getElementById("preview");
+        preview.src = URL.createObjectURL(event.target.files[0]);
+        preview.style.display = "block";
+    }
+</script>
+
+</body>
+</html>

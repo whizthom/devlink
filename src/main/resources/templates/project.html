@@ -3,97 +3,507 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>DevLink | Projects</title>
+  <title>DevLink | Link Up</title>
 
   <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"/>
 
   <style>
-    /* === Shared Dashboard Styles (pulled from your dashboard.css) === */
-    body { background:#f8f9fa; font-family: 'Inter', sans-serif; }
-    .sidebar { position:fixed; top:0; left:0; width:250px; height:100%; background:#111827; color:#fff; padding:1rem; }
-    .sidebar .brand { display:flex; align-items:center; gap:0.5rem; font-weight:bold; font-size:1.25rem; margin-bottom:2rem; }
-    .sidebar .menu a { display:flex; align-items:center; gap:0.75rem; color:#9ca3af; padding:0.6rem 0.75rem; border-radius:0.5rem; margin-bottom:0.4rem; text-decoration:none; transition:all 0.2s; }
-    .sidebar .menu a.active, .sidebar .menu a:hover { background:#1f2937; color:#fff; }
-    .sidebar .section { font-size:0.75rem; color:#6b7280; margin:1.5rem 0 0.5rem; text-transform:uppercase; }
-    .main { margin-left:260px; padding:1rem; }
-    .topbar { background:#fff; border-radius:1rem; box-shadow:0 2px 8px rgba(0,0,0,0.05); margin-bottom:1.5rem; }
-    .card-soft { background:#fff; border-radius:1rem; padding:1.5rem; box-shadow:0 2px 10px rgba(0,0,0,0.05); }
-    .section-title { display:flex; align-items:center; gap:0.5rem; font-weight:600; margin-bottom:1rem; }
-    .section-title .dot { width:10px; height:10px; border-radius:50%; background:#6366f1; }
-    .timeline { border-left:2px solid #e5e7eb; margin-left:0.5rem; }
-    .timeline-item { position:relative; margin-bottom:1.5rem; padding-left:1.5rem; }
-    .timeline-item:before { content:""; position:absolute; top:0.6rem; left:-0.6rem; width:12px; height:12px; border-radius:50%; background:#6366f1; }
-    .item-card { background:#f9fafb; border-radius:0.75rem; padding:1rem; border:1px solid #e5e7eb; }
-    .btn-pill { border-radius:50px; }
-    .soft-muted { color:#6b7280; }
-    .empty { text-align:center; padding:2rem; color:#9ca3af; }
+    :root{
+      --brand-1:#ff00ff; --brand-2:#00ffff;
+      --ink-900:#0f172a; --ink-800:#1f2937; --ink-700:#334155; --ink-600:#475569; --ink-500:#6b7280;
+      --bg-soft:#f7f8fb; --card:#ffffff; --line:#eef2f7;
+      --danger:#dc2626; --primary:#0ea5e9; --success:#16a34a; --warning:#f59e0b;
+    }
+
+    html,body{min-height:100%}
+    body{
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol",sans-serif;
+      color:var(--ink-900);
+      background:var(--bg-soft);
+      overflow-x:hidden;
+    }
+
+    /* ===== Sidebar ===== */
+    .sidebar{
+      position:fixed; inset:0 auto 0 0; width:270px;
+      background:linear-gradient(180deg,#101827 0%,#0b1220 60%,#0b1220 100%);
+      color:#e5e7eb; border-right:1px solid rgba(255,255,255,.08);
+      z-index:1030; overflow-y:auto;
+    }
+    .sidebar .brand{
+      display:flex; align-items:center; gap:.75rem; padding:1.25rem;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      background:linear-gradient(90deg,rgba(255,0,255,.06),rgba(0,255,255,.06));
+    }
+    .sidebar .logo{
+      width:36px;height:36px;border-radius:10px;
+      background:conic-gradient(from 120deg,var(--brand-1),var(--brand-2) 60%,var(--brand-1));
+      box-shadow:0 6px 16px rgba(0,0,0,.25);
+    }
+    .sidebar .brand span{font-weight:700;letter-spacing:.2px}
+    .sidebar .menu{padding:1rem}
+    .sidebar .menu a{
+      --pad:.7rem .95rem;
+      display:flex; align-items:center; gap:.75rem; padding:var(--pad);
+      color:#cbd5e1; text-decoration:none; border-radius:12px; transition:.2s ease;
+      position:relative;
+    }
+    .sidebar .menu a .bi{font-size:1.05rem; opacity:.9}
+    .sidebar .menu a:hover,
+    .sidebar .menu a.active{
+      background:linear-gradient(90deg,rgba(255,0,255,.14),rgba(0,255,255,.14));
+      color:#fff;
+    }
+    .sidebar .section{
+      margin:.75rem 0 .4rem; padding:0 .45rem;
+      font-size:.73rem; color:#94a3b8; text-transform:uppercase; letter-spacing:.12em;
+    }
+
+    /* ===== Main / Topbar ===== */
+    .main{ margin-left:270px; min-height:100vh; display:flex; flex-direction:column; }
+    .topbar{
+      position:sticky; top:0; z-index:1020;
+      background:#fff; border-bottom:1px solid var(--line);
+    }
+    .topbar .search{
+      max-width:460px; width:100%;
+      border:1px solid #e5e7eb; border-radius:14px; padding:.5rem .8rem;
+      background:#fafafa; transition:.2s;
+    }
+    .topbar .search:focus{background:#fff; border-color:#cbd5e1; box-shadow:0 0 0 .25rem rgba(14,165,233,.12)}
+
+    /* ===== Cards & utilities ===== */
+    .card-soft{
+      background:var(--card); border:1px solid var(--line); border-radius:18px;
+      box-shadow:0 6px 18px rgba(2,8,20,.05); height:100%;
+    }
+    .section-title{
+      display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1rem;
+    }
+    .section-title h3{
+      font-size:1.05rem; margin:0; color:var(--ink-800);
+      display:flex; align-items:center; gap:.6rem;
+    }
+    .section-title h3 .dot{
+      width:10px;height:10px;border-radius:50%;
+      background:linear-gradient(135deg,var(--brand-1),var(--brand-2));
+      box-shadow:0 0 0 4px rgba(14,165,233,.08);
+    }
+    .soft-muted{color:var(--ink-600)}
+    .gradient-underline{ position:relative; display:inline-block; }
+    .gradient-underline:after{
+      content:""; position:absolute; left:0; right:0; bottom:-6px; height:3px; border-radius:999px;
+      background:linear-gradient(90deg,var(--brand-1),var(--brand-2));
+    }
+
+    /* ===== Glass containers ===== */
+    .glass-card{
+      background:rgba(255,255,255,.66);
+      backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+      border:1px solid rgba(255,255,255,.35); border-radius:16px;
+      box-shadow:0 6px 24px rgba(0,0,0,.06);
+    }
+
+    /* ===== Number badges ===== */
+    .number-badge{
+      --sz:46px; width:var(--sz); height:var(--sz);
+      font-size:18px; font-weight:700; border-radius:50%;
+      display:flex; align-items:center; justify-content:center; color:#fff; flex:0 0 var(--sz);
+      box-shadow:0 6px 16px rgba(0,0,0,.15);
+    }
+    .exp-badge{ background:linear-gradient(135deg,#ff512f,#dd2476); }
+    .cert-badge{ background:linear-gradient(135deg,#36d1dc,#5b86e5); }
+    .skill-badge{background:linear-gradient(135deg,#ff00ff, #670058); }
+
+    /* ===== Timelines ===== */
+    /*.timeline {*/
+    /*    position: relative;       !* NEW *!*/
+    /*    max-height: none;         !* allow full height *!*/
+    /*    overflow: visible;        !* don’t clip children *!*/
+    /*}*/
+
+    .timeline {
+      max-height: 350px;
+      overflow-y: auto;
+      padding-right: .5rem; /* space for scrollbar */
+    }
+
+
+
+
+    .timeline:before{
+      content:""; position:absolute; left:0; top:.4rem; bottom:.4rem; width:2px; border-radius:2px;
+      background:linear-gradient(180deg, rgba(15,23,42,.08), rgba(14,165,233,.25));
+    }
+    .timeline-item{
+      display:flex; gap:1rem; padding:1.1rem 0; border-bottom:1px dashed var(--line);
+    }
+    .timeline-item:last-child{ border-bottom:none; padding-bottom:.2rem }
+    .item-card{
+      background:linear-gradient(180deg,#ffffff 0%, #fcfdff 80%);
+      border:1px solid var(--line); border-radius:14px; padding:1rem 1rem;
+      width:100%; transition:.2s ease; position:relative;
+    }
+    .item-card:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(2,8,20,.06) }
+
+    .meta-row{ display:flex; flex-wrap:wrap; gap:.75rem; color:var(--ink-600); font-size:.9rem }
+    .meta-row .badge-soft{
+      background:#f3f4f6; color:#111827; border:1px solid #e5e7eb; border-radius:999px; padding:.25rem .6rem; font-weight:600;
+    }
+
+    /* ===== Empty state ===== */
+    .empty{
+      border:2px dashed #e5e7eb; border-radius:16px; padding:2rem; text-align:center; color:var(--ink-600);
+      background:#fff;
+    }
+
+    /* ===== Buttons ===== */
+    .btn-pill{ border-radius:999px }
+    .btn-glow{
+      position:relative; overflow:hidden;
+    }
+    .btn-glow:after{
+      content:""; position:absolute; inset:-40% -60%; background:conic-gradient(from 0deg, rgba(255,0,255,.25), rgba(0,255,255,.25), transparent 30%);
+      transform:rotate(0); animation:spin 6s linear infinite; pointer-events:none; filter:blur(14px);
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ===== Forms in glass ===== */
+    .glass-card label{ color:var(--ink-800) }
+    .glass-card p, .glass-card small, .glass-card a{ color:var(--ink-700) }
+
+    /* ===== Responsive sidebar collapse ===== */
+    @media (max-width: 991.98px){
+      .sidebar{ width:84px }
+      .sidebar .brand span, .sidebar .menu .label{ display:none }
+      .sidebar .menu a{ justify-content:center }
+      .main{ margin-left:84px }
+    }
+
+    /* ===== Small helpers ===== */
+    .clickable{ cursor:pointer }
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:.8rem; background:#f3f4f6; border:1px solid #e5e7eb; border-bottom-width:2px;
+      padding:.1rem .4rem; border-radius:6px;
+    }
   </style>
 </head>
 <body>
-
-<!-- Sidebar -->
+<!-- ============ Sidebar ============ -->
 <aside class="sidebar">
   <div class="brand">
-    <i class="bi bi-link-45deg"></i> <span>DevLink</span>
+    <div class="logo" aria-hidden="true"></div>
+    <span>DevLink</span>
   </div>
-  <nav class="menu">
-    <a th:href="@{/dashboard}"><i class="bi bi-speedometer2"></i> Dashboard</a>
-    <a th:href="@{/profile}"><i class="bi bi-person"></i> Profile</a>
-    <a th:href="@{/skill}"><i class="bi bi-layers"></i> Skills</a>
-    <a th:href="@{/project/view}" class="active"><i class="bi bi-kanban"></i> Projects</a>
+  <nav class="menu" aria-label="Primary">
+    <a th:href="@{/dashboard}" class="active"><i class="bi bi-speedometer2"></i><span class="label">Dashboard</span></a>
+    <a th:href="@{/link/view}"><i class="bi bi-person"></i><span class="label">Link Up</span></a>
+    <a th:href="@{/skill}"><i class="bi bi-layers"></i><span class="label">All Skills</span></a>
+    <a th:href="@{/project/view}"><i class="bi bi-kanban"></i><span class="label">Projects</span></a>
 
     <div class="section">Account</div>
-    <a th:href="@{/settings}"><i class="bi bi-gear"></i> Settings</a>
-    <a th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> Logout</a>
+    <a th:href="@{/settings}"><i class="bi bi-gear"></i><span class="label">Settings</span></a>
+    <a th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i><span class="label">Logout</span></a>
   </nav>
 </aside>
 
-<!-- Main -->
+<!-- ========== Main ============ -->
 <main class="main">
   <!-- Topbar -->
-  <header class="topbar p-3 d-flex justify-content-between align-items-center">
-    <h5 class="mb-0">Projects</h5>
-    <a th:href="@{/project/add}" class="btn btn-sm btn-primary btn-pill"><i class="bi bi-plus"></i> Add Project</a>
-  </header>
+  <header class="topbar card-soft py-3">
+    <div class="container-fluid px-4">
+      <div class="d-flex align-items-center justify-content-between gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <h1 class="h5 mb-0 gradient-underline">Link Up</h1>
+        </div>
 
-  <!-- Projects Section -->
-  <div class="card-soft">
-    <div class="section-title"><span class="dot"></span> <h6 class="mb-0">My Projects</h6></div>
+        <form class="d-none d-md-flex align-items-center gap-2" role="search" onsubmit="return false">
+          <i class="bi bi-search soft-muted"></i>
+          <input class="search form-control form-control-sm" id="globalSearch" type="search" placeholder="Search users or projects…" aria-label="Search"/>
+        </form>
 
-    <!-- Empty state -->
-    <div th:if="${#lists.isEmpty(projects)}" class="empty">
-      <i class="bi bi-kanban fs-3 d-block mb-2"></i>
-      No projects yet. <a th:href="@{/project/add}">Add your first project</a>.
-    </div>
-
-    <!-- Timeline -->
-    <div class="timeline" th:if="${!#lists.isEmpty(projects)}">
-      <div th:each="proj : ${projects}" class="timeline-item">
-        <div class="item-card">
-          <div class="d-flex justify-content-between">
-            <h6 th:text="${proj.title}">Project Title</h6>
-            <small class="soft-muted" th:text="${#temporals.format(proj.createdAt,'MMM yyyy')}">Jan 2025</small>
-          </div>
-          <p class="soft-muted small mb-2" th:text="${proj.description}">Short description of the project.</p>
-          <div class="mb-2">
-            <span class="badge bg-light text-dark"><i class="bi bi-code-slash"></i> <span th:text="${proj.techStack}">Java, Spring</span></span>
-          </div>
-          <div class="d-flex gap-2">
-            <a th:href="@{/project/edit-form/{id}(id=${proj.id})}" class="btn btn-sm btn-outline-primary btn-pill">
-              <i class="bi bi-pencil"></i> Edit
-            </a>
-            <a th:href="@{/project/delete/{id}(id=${proj.id})}" onclick="return confirm('Delete this project?')" class="btn btn-sm btn-outline-danger btn-pill">
-              <i class="bi bi-trash"></i> Delete
-            </a>
+        <div class="d-flex align-items-center gap-2">
+          <button class="btn btn-sm btn-outline-secondary btn-pill" type="button" data-bs-toggle="modal" data-bs-target="#modalQuickAdd">
+            <i class="bi bi-plus-circle"></i> Add a Project
+          </button>
+          <div class="dropdown">
+            <button class="btn btn-sm btn-light border dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              <img th:src="${profileImageUrl}" src="https://via.placeholder.com/32" alt="avatar" class="rounded-circle me-2" width="32" height="32"/>
+              <span th:text="${username}">User</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person"></i> Profile</a></li>
+              <li><a class="dropdown-item" th:href="@{/settings}"><i class="bi bi-gear"></i> Settings</a></li>
+              <li><hr class="dropdown-divider"/></li>
+              <li><a class="dropdown-item" th:href="@{/logout}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+            </ul>
           </div>
         </div>
       </div>
     </div>
+  </header>
 
-  </div>
+  <!-- Content -->
+  <section class="container-fluid px-4 py-4">
+
+    <!-- ===== Overview KPIs ===== -->
+    <div class="row g-3 mb-3">
+      <div class="col-6 col-lg-3">
+        <div class="card-soft p-3 d-flex gap-2 align-items-center">
+          <div class="number-badge exp-badge" aria-hidden="true"><i class="bi bi-briefcase"></i></div>
+          <div>
+            <div class="soft-muted small">Total Users</div>
+            <div class="fs-5 fw-semibold" th:text="${#lists.size(users)}">0</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="card-soft p-3 d-flex gap-2 align-items-center">
+          <div class="number-badge cert-badge" aria-hidden="true"><i class="bi bi-award"></i></div>
+          <div>
+            <div class="soft-muted small">Projects</div>
+            <div class="fs-5 fw-semibold" th:text="${#lists.size(projects)}">0</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <section class="container-fluid px-4 py-4">
+      <div class="card-soft p-3">
+        <div class="timeline" th:if="${!#lists.isEmpty(users)}">
+          <div th:each="user : ${users}">
+            <div th:each="proj : ${user.projects}" class="timeline-item"
+                 id="project-[[${proj.id}]]">
+              <div class="item-card">
+                <!-- User Meta -->
+                <div class="user-meta">
+                  <a th:href="@{/profile/{id}(id=${user.id})}">
+                    <img th:src="${profileImageUrl}" src="https://via.placeholder.com/40" alt="Profile"/>
+                  </a>
+                  <div>
+                    <a th:href="@{/profile/{id}(id=${user.id})}" th:text="${user.username}">Username</a>
+                    <div class="small text-muted">posted a project</div>
+                  </div>
+                </div>
+
+                <!-- Project Title -->
+                <h6 th:text="${proj.title}" class="fw-semibold mb-1">Project Title</h6>
+                <p class="soft-muted small mb-2" th:text="${proj.description}">Short description</p>
+
+                <!-- Tech stack -->
+                <div class="mb-2">
+                <span class="badge bg-light text-dark">
+                  <i class="bi bi-code-slash"></i>
+                  <span th:text="${proj.techStack}">Java, Spring</span>
+                </span>
+                </div>
+
+                <!-- Actions (owner only) -->
+                <div class="d-flex gap-2 mb-3" th:if="${proj.user.id == currentUser.id}">
+                  <a th:href="@{/project/edit-form/{id}(id=${proj.id})}" class="btn btn-sm btn-outline-primary btn-pill"><i class="bi bi-pencil"></i> Edit</a>
+                  <a th:href="@{/project/delete/{id}(id=${proj.id})}" onclick="return confirm('Delete this project?')" class="btn btn-sm btn-outline-danger btn-pill"><i class="bi bi-trash"></i> Delete</a>
+                </div>
+
+                <!-- Likes & Comments -->
+                <div class="border-top pt-2">
+                  <div class="d-flex align-items-center mb-2">
+                    <form th:action="@{/like/new/{id}(id=${proj.id})}" method="post" class="me-2">
+                      <button type="submit" class="btn btn-sm btn-outline-success"><i class="bi bi-hand-thumbs-up"></i></button>
+                    </form>
+                    <span th:text="${#lists.size(proj.likes) + ' likes'}" class="text-muted small">Likes</span>
+                  </div>
+                  <div class="comments mb-2">
+                    <h6 class="small text-muted">Comments</h6>
+                    <div th:if="${#lists.isEmpty(proj.comments)}" class="text-muted small">No comments yet.</div>
+                    <div th:each="c : ${proj.comments}" class="mb-1 p-2 rounded bg-light">
+                      <strong th:text="${c.author.username}">User</strong>: <span th:text="${c.content}">Nice project!</span>
+                    </div>
+                  </div>
+                  <form th:action="@{/comment/new/{id}(id=${proj.id})}" method="post" class="d-flex mt-2">
+                    <input name="content" class="form-control form-control-sm me-2" placeholder="Write a comment..." required/>
+                    <button type="submit" class="btn btn-sm btn-primary">Post</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </section>
 </main>
 
+<!-- ===== Quick Add Modal ===== -->
+<div class="modal fade" id="modalQuickAdd" tabindex="-1" aria-labelledby="modalQuickAddLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalQuickAddLabel">Quick Add</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs" id="quickAddTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="add-exp-tab" data-bs-toggle="tab" data-bs-target="#add-exp" type="button" role="tab" aria-controls="add-exp" aria-selected="true">
+              <i class="bi bi-briefcase"></i> Experience
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="add-cert-tab" data-bs-toggle="tab" data-bs-target="#add-cert" type="button" role="tab" aria-controls="add-cert" aria-selected="false">
+              <i class="bi bi-award"></i> Certification
+            </button>
+          </li>
+        </ul>
+        <div class="tab-content pt-3">
+          <!-- Quick Experience -->
+          <div class="tab-pane fade show active" id="add-exp" role="tabpanel" aria-labelledby="add-exp-tab">
+            <form th:action="@{/experience/add}" th:object="${exp}" method="post">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Job Title</label>
+                  <input class="form-control" th:field="*{title}" required/>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Company</label>
+                  <input class="form-control" th:field="*{company}" required/>
+                </div>
+                <!--                                <div class="col-12">-->
+                <!--                                    <label class="form-label">Location</label>-->
+                <!--                                    <input class="form-control" th:field="*{location}"/>-->
+                <!--                                </div>-->
+
+                <div class="col-12">
+                  <label class="form-label">Location</label>
+                  <select class="form-control" th:field="*{location}" required>
+                    <option value="">Select location</option>
+                    <option value="Remote">Remote</option>
+                    <option value="Onsite">Onsite</option>
+                    <option value="Hybrid">Hybrid</option>
+                  </select>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">Description</label>
+                  <textarea class="form-control" th:field="*{description}" rows="3"></textarea>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Start Date</label>
+                  <input type="date" class="form-control" th:field="*{startDate}" required/>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">End Date</label>
+                  <input type="date" class="form-control" th:field="*{endDate}"/>
+                  <div class="form-text">Leave empty if current</div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end gap-2 mt-3">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-glow">Save Experience</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Quick Certification -->
+          <div class="tab-pane fade" id="add-cert" role="tabpanel" aria-labelledby="add-cert-tab">
+            <form th:action="@{/certificate/add}" th:object="${cert}" method="post">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Title</label>
+                  <input class="form-control" th:field="*{title}" required/>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Issuing Organization</label>
+                  <input class="form-control" th:field="*{issuingOrganization}" required/>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Date Issued</label>
+                  <input type="date" class="form-control" th:field="*{dateIssued}" required/>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Certificate URL</label>
+                  <input class="form-control" th:field="*{certificateUrl}" placeholder="https://…"/>
+                </div>
+              </div>
+              <div class="d-flex justify-content-end gap-2 mt-3">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary btn-glow">Save Certification</button>
+              </div>
+            </form>
+          </div>
+        </div><!-- /tab-content -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Minimal UX helpers (search/filter/sort on the client for better feel) -->
+<script>
+  // Global quick search (client-side)
+  (function(){
+    const q = document.getElementById('globalSearch');
+    if(!q) return;
+    q.addEventListener('input', function(){
+      const term = this.value.trim().toLowerCase();
+      document.querySelectorAll('.experience-item, .certification-item').forEach(el=>{
+        const title = (el.getAttribute('data-title') || '').toLowerCase();
+        el.style.display = title.includes(term) ? '' : 'none';
+      });
+    });
+  })();
+
+  // Section filter (All / Experiences / Certifications)
+  (function(){
+    const buttons = document.querySelectorAll('[data-filter]');
+    buttons.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        buttons.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const key = btn.getAttribute('data-filter');
+        document.querySelectorAll('[data-section]').forEach(sec=>{
+          if(key === 'all'){ sec.style.display = ''; }
+          else { sec.style.display = (sec.getAttribute('data-section') === key) ? '' : 'none'; }
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  })();
+
+  // Simple sort demo
+  (function(){
+    const select = document.getElementById('sortSelect');
+    if(!select) return;
+    select.addEventListener('change', ()=>{
+      // reverse order for "oldest" >> This is purely visual as the best is if i do the sorting from the controller
+      const expList = document.getElementById('experienceList');
+      const certList = document.getElementById('certList');
+      const sort = select.value;
+
+      [expList, certList].forEach(list=>{
+        if(!list) return;
+        const items = Array.from(list.children);
+        if(sort === 'oldest'){
+          items.reverse().forEach(i=>list.appendChild(i));
+        }else if(sort === 'title'){
+          items.sort((a,b)=>{
+            const at = (a.getAttribute('data-title')||'').toLowerCase();
+            const bt = (b.getAttribute('data-title')||'').toLowerCase();
+            return at.localeCompare(bt);
+          }).forEach(i=>list.appendChild(i));
+        }else{
+          // newest (original DOM order) – do nothing
+        }
+      });
+    });
+  })();
+</script>
 </body>
 </html>
